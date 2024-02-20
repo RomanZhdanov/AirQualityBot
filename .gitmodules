@@ -1,0 +1,3 @@
+[submodule "lib/IQAirApiClient"]
+	path = lib/IQAirApiClient
+	url = https://github.com/RomanZhdanov/IQAirApiClient

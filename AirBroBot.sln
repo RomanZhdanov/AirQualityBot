@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{3362E650-3505-4884-84C0-3F6CE8C7C986}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{56CD620D-E444-45E5-A1AE-D96E5716B8C9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bot", "src\Bot\Bot.csproj", "{5F23593A-047D-4683-B1BA-063313411222}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IQAirApiClient", "lib\IQAirApiClient\IQAirApiClient\IQAirApiClient.csproj", "{4F26C88A-B3CC-49EF-ACF4-B676830E56D0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5F23593A-047D-4683-B1BA-063313411222} = {56CD620D-E444-45E5-A1AE-D96E5716B8C9}
+		{4F26C88A-B3CC-49EF-ACF4-B676830E56D0} = {3362E650-3505-4884-84C0-3F6CE8C7C986}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5F23593A-047D-4683-B1BA-063313411222}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F23593A-047D-4683-B1BA-063313411222}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F23593A-047D-4683-B1BA-063313411222}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F23593A-047D-4683-B1BA-063313411222}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F26C88A-B3CC-49EF-ACF4-B676830E56D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F26C88A-B3CC-49EF-ACF4-B676830E56D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F26C88A-B3CC-49EF-ACF4-B676830E56D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F26C88A-B3CC-49EF-ACF4-B676830E56D0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
