@@ -67,7 +67,7 @@ async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, Cancel
     {
         var action = message.Text!.Split(' ')[0] switch
         {
-            "/set_my_location" => SendStartSetUserLocation(botClient, message, userProfile, cancellationToken),
+            "/set_my_location" => SetUserLocationDialog(botClient, message, userProfile, cancellationToken),
             "/show_air" => SendAirQuality(botClient, message, userProfile, cancellationToken),
             _ => SendStartMessage(botClient, message)
         };
@@ -98,29 +98,26 @@ async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, Cancel
         msgText.AppendLine($"AQI China: {result.Current.Pollution.Aqicn}");
         msgText.AppendLine($"main pollutant for US AQI: {result.Current.Pollution.Mainus}");
         msgText.AppendLine($"main pollutant for Chinese AQI: {result.Current.Pollution.Maincn}");
+        msgText.AppendLine(
+            $"Date: {result.Current.Pollution.Ts.ToShortDateString()} Time: {result.Current.Pollution.Ts.ToShortTimeString()}");
         
         return await botClient.SendTextMessageAsync(
             chatId: chatId,
             text: msgText.ToString(),
             cancellationToken: cancellationToken);
     }
-    
-    async Task<Message> SendStartSetUserLocation(ITelegramBotClient bot, Message message, UserProfile userProfile, CancellationToken cancellationToken)
-    {
-        userProfile.Flow.LastQuestionAsked = ConversationFlow.Question.Country;
-        
-        return await botClient.SendTextMessageAsync(
-            chatId: message.Chat.Id,
-            text: "Lets start from choosing a country. Send my a country name.",
-            cancellationToken: cancellationToken);
-    }
 
     async Task<Message> SetUserLocationDialog(ITelegramBotClient bot, Message message, UserProfile userProfile, CancellationToken cancellationToken)
     {
         string msg = string.Empty;
+        IReplyMarkup keyboard = new ReplyKeyboardRemove();
         
         switch (userProfile.Flow.LastQuestionAsked)
         {
+            case ConversationFlow.Question.None:
+                msg = "Lets start from choosing a country. Send my a country name.";
+                userProfile.Flow.LastQuestionAsked = ConversationFlow.Question.Country;
+                break;
             case ConversationFlow.Question.Country:
                 userProfile.Country = message.Text;
                 msg = $"Country {message.Text} saved. Now lets choose state.";
@@ -141,6 +138,7 @@ async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, Cancel
         return await bot.SendTextMessageAsync(
             chatId: chatId,
             text: msg,
+            replyMarkup: keyboard,
             cancellationToken: cancellationToken);
     }
 
