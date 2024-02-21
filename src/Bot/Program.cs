@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Bot.Models;
+using Bot.Services;
 using IQAirApiClient;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
@@ -10,6 +11,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 var httpClient = new HttpClient();
 IQAirApi iqAirClient = new IQAirApiClient.IQAirApiClient("499036c0-fec3-4dc1-b256-4452b296b7e1", httpClient);
+var iqAirService = new IQAirService(iqAirClient);
 var botClient = new TelegramBotClient("6862075580:AAGGDxC9Ut0p0OrweBjl-2FsUCLN-7ZFS30");
 Dictionary<long, UserProfile> usersData = new();
 
@@ -93,7 +95,7 @@ async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, Cancel
         var result = await iqAirClient.GetSpecifiedCityData(userProfile.City, userProfile.State, userProfile.Country);
         
         var msgText = new StringBuilder();
-        msgText.AppendLine("Pollution in Moscow:");
+        msgText.AppendLine($"Pollution in {result.City}:");
         msgText.AppendLine($"AQI US: {result.Current.Pollution.Aqius}");
         msgText.AppendLine($"AQI China: {result.Current.Pollution.Aqicn}");
         msgText.AppendLine($"main pollutant for US AQI: {result.Current.Pollution.Mainus}");
@@ -115,8 +117,25 @@ async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, Cancel
         switch (userProfile.Flow.LastQuestionAsked)
         {
             case ConversationFlow.Question.None:
-                msg = "Lets start from choosing a country. Send my a country name.";
+                var cnt = iqAirService.GetCountriesCount();
+                msg = $"Lets start from choosing a country. Select country ({cnt} available)";
                 userProfile.Flow.LastQuestionAsked = ConversationFlow.Question.Country;
+                var countries = iqAirService.GetCountriesPage(1, 10);
+                var buttonRows = new List<List<InlineKeyboardButton>>();
+                foreach (var country in countries)
+                {
+                    var buttonRow = new List<InlineKeyboardButton>
+                    {
+                        InlineKeyboardButton.WithCallbackData(country.Country, $"client_actions|{country.Country}")
+                    };
+                    buttonRows.Add(buttonRow);
+                }
+                buttonRows.Add(new List<InlineKeyboardButton>
+                {
+                    InlineKeyboardButton.WithCallbackData("<<", $"countries_page|1"),
+                    InlineKeyboardButton.WithCallbackData(">>", $"countries_page|2")
+                });
+                keyboard = new InlineKeyboardMarkup(buttonRows);
                 break;
             case ConversationFlow.Question.Country:
                 userProfile.Country = message.Text;
@@ -156,6 +175,11 @@ async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, Cancel
     //     chatId: chatId,
     //     text: msgText.ToString(),
     //     cancellationToken: cancellationToken);
+}
+
+async Task BotOnCallbackQueryReceived(ITelegramBotClient botClient, CallbackQuery query)
+{
+    string[] args = query.Data.Split('|');    
 }
 
 Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
