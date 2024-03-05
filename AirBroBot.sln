@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{3362E650-350
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{56CD620D-E444-45E5-A1AE-D96E5716B8C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bot", "src\Bot\Bot.csproj", "{5F23593A-047D-4683-B1BA-063313411222}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramBot", "src\TelegramBot\TelegramBot.csproj", "{5F23593A-047D-4683-B1BA-063313411222}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IQAirApiClient", "lib\IQAirApiClient\IQAirApiClient\IQAirApiClient.csproj", "{4F26C88A-B3CC-49EF-ACF4-B676830E56D0}"
 EndProject

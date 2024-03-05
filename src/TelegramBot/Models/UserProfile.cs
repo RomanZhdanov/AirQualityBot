@@ -1,4 +1,4 @@
-namespace Bot.Models;
+namespace AirBro.TelegramBot.Models;
 
 public class UserProfile
 {
