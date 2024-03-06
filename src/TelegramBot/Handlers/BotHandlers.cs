@@ -13,12 +13,10 @@ public sealed class BotHandlers : IBotHandlers
     private readonly IQAirService _airService;
     private readonly Dictionary<long, UserProfile> _usersData;
 
-    public BotHandlers(string iqAirKey, Dictionary<long, UserProfile> usersData)
+    public BotHandlers(IQAirService airService)
     {
-        var httpClient = new HttpClient();
-        IQAirApi iqAirClient = new IQAirApiClient.IQAirApiClient(iqAirKey, httpClient);
-        _airService = new IQAirService(iqAirClient);
-        _usersData = usersData;
+        _airService = airService;
+        _usersData = new();
     }
     public Task HandleErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
     {

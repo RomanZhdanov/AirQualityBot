@@ -1,4 +1,5 @@
 using AirBro.TelegramBot.Handlers;
+using Microsoft.Extensions.Configuration;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types.Enums;
@@ -10,8 +11,11 @@ public sealed class AirBroBot
     private readonly ITelegramBotClient _bot;
     private readonly IBotHandlers _handlers;
 
-    public AirBroBot(string key, IBotHandlers handlers)
+    public AirBroBot(IConfiguration configuration, IBotHandlers handlers)
     {
+        var key = configuration["TelegramBotKey"];
+        if (key is null) throw new ArgumentException("Bot key is not found!");
+        
         _bot = new TelegramBotClient(key);
         _handlers = handlers;
     }

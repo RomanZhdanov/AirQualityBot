@@ -20,6 +20,12 @@ public class IQAirService
             return _countriesList ??= _iqAirClient.ListSupportedCountries().Result;
         }
     }
+
+    public IQAirService(IQAirApi iqAirClient)
+    {
+        _iqAirClient = iqAirClient;
+        _countriesList = null;
+    }
     
     public async Task<AirQualityResult> GetAirForCity(string city, string state, string country)
     {
@@ -31,12 +37,6 @@ public class IQAirService
             Aqi = cityData.Current.Pollution.Aqius,
             LastUpdate = cityData.Current.Pollution.Ts
         };
-    }
-
-    public IQAirService(IQAirApi iqAirClient)
-    {
-        _iqAirClient = iqAirClient;
-        _countriesList = null;
     }
 
     public PaginatedList<CountryItem> GetCountriesPage(int page, int pageSize)
