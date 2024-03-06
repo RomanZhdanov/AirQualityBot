@@ -9,9 +9,9 @@ namespace AirBro.TelegramBot.Commands.SetUserState;
 public class SetUserStateCommandHandler : IBotCommandHandler
 {
     private readonly IQAirService _airService;
-    private readonly Dictionary<long, UserProfile> _usersData;
+    private readonly UserDataService _usersData;
     
-    public SetUserStateCommandHandler(IQAirService airService, Dictionary<long, UserProfile> usersData)
+    public SetUserStateCommandHandler(IQAirService airService, UserDataService usersData)
     {
         _airService = airService;
         _usersData = usersData;
@@ -21,13 +21,8 @@ public class SetUserStateCommandHandler : IBotCommandHandler
     {
         var chatId = message.Chat.Id;
         var state = args[1];
-            
-        UserProfile userProfile = new UserProfile();
-            
-        if (!_usersData.TryAdd(chatId, userProfile))
-        {
-            userProfile = _usersData[chatId];
-        }
+
+        UserProfile userProfile = _usersData.GetUserProfile(chatId);
 
         userProfile.State = state;
 

@@ -1,6 +1,4 @@
 using AirBro.TelegramBot.Commands;
-using AirBro.TelegramBot.Models;
-using AirBro.TelegramBot.Services;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -12,9 +10,9 @@ public class UpdateHandlers : IUpdateHandlers
 {
     private readonly CommandsManager _commandsManager;
 
-    public UpdateHandlers(IQAirService airService, Dictionary<long, UserProfile> usersData)
+    public UpdateHandlers(CommandsManager commandsManager)
     {
-        _commandsManager = new CommandsManager(airService, usersData);
+        _commandsManager = commandsManager;
     }
     
     public async Task BotOnMessageReceived(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)

@@ -7,7 +7,6 @@ using AirBro.TelegramBot.Commands.UpdateCitiesPage;
 using AirBro.TelegramBot.Commands.UpdateCountriesPage;
 using AirBro.TelegramBot.Commands.UpdateStatesPage;
 using AirBro.TelegramBot.Commands.Welcome;
-using AirBro.TelegramBot.Models;
 using AirBro.TelegramBot.Services;
 
 namespace AirBro.TelegramBot.Commands;
@@ -15,7 +14,7 @@ namespace AirBro.TelegramBot.Commands;
 public class CommandsManager
 {
     private readonly IQAirService _airService;
-    private readonly Dictionary<long, UserProfile> _usersData;
+    private readonly UserDataService _usersData;
 
     private WelcomeCommandHandler? _welcomeCommandHandler;
     private SetUserLocationCommandHandler? _setUserLocationCommandHandler;
@@ -27,7 +26,7 @@ public class CommandsManager
     private UpdateStatesPageCommandHandler? _updateStatesPageCommandHandler;
     private UpdateCitiesPageCommandHandler? _updateCitiesPageCommandHandler;
     
-    public CommandsManager(IQAirService airService, Dictionary<long, UserProfile> usersData)
+    public CommandsManager(IQAirService airService, UserDataService usersData)
     {
         _airService = airService;
         _usersData = usersData;
@@ -37,6 +36,11 @@ public class CommandsManager
     {
         return command switch
         {
+            "/example" => null,
+            "/add_location" => null,
+            "/my_locations" => null,
+            "/aqi_guide" => null,
+            "/settings" => null,
             "/set_location" => _setUserLocationCommandHandler ??= new SetUserLocationCommandHandler(_airService),
             "/show_air" => _showAirCommandHandler ??= new ShowAirCommandHandler(_airService, _usersData),
             "set_country" => _setUserCountryCommandHandler ??= new SetUserCountryCommandHandler(_airService, _usersData),

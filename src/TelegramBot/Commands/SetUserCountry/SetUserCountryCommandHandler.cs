@@ -9,9 +9,9 @@ namespace AirBro.TelegramBot.Commands.SetUserCountry;
 public class SetUserCountryCommandHandler : IBotCommandHandler
 {
     private readonly IQAirService _airService;
-    private readonly Dictionary<long, UserProfile> _usersData;
+    private readonly UserDataService _usersData;
 
-    public SetUserCountryCommandHandler(IQAirService airService, Dictionary<long, UserProfile> usersData)
+    public SetUserCountryCommandHandler(IQAirService airService, UserDataService usersData)
     {
         _airService = airService;
         _usersData = usersData;
@@ -21,13 +21,8 @@ public class SetUserCountryCommandHandler : IBotCommandHandler
     {
         var chatId = message.Chat.Id;
         var country = args[1];
-            
-        UserProfile userProfile = new UserProfile();
-            
-        if (!_usersData.TryAdd(chatId, userProfile))
-        {
-            userProfile = _usersData[chatId];
-        }
+
+        UserProfile userProfile = _usersData.GetUserProfile(chatId);
 
         userProfile.Country = country;
 

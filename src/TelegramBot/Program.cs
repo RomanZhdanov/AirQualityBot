@@ -1,4 +1,6 @@
-﻿using AirBro.TelegramBot;
+﻿using System.Reflection;
+using AirBro.TelegramBot;
+using AirBro.TelegramBot.Commands;
 using AirBro.TelegramBot.Handlers;
 using AirBro.TelegramBot.Services;
 using IQAirApiClient;
@@ -10,13 +12,17 @@ using var host = Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration(app =>
     {
         app.AddJsonFile("appsettings.json");
+        app.AddUserSecrets(Assembly.GetExecutingAssembly());
     })
     .ConfigureServices(services =>
     {
         services.AddHostedService<BotService>();
         services.AddSingleton<AirBroBot>();
         services.AddSingleton<IQAirService>();
+        services.AddSingleton<UserDataService>();
         services.AddSingleton<IBotHandlers, BotHandlers>();
+        services.AddScoped<IUpdateHandlers, UpdateHandlers>();
+        services.AddScoped<CommandsManager>();
         services.AddTransient<IQAirApi, IQAirApiClient.IQAirApiClient>();
         services.AddHttpClient();
     })

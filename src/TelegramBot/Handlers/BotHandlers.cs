@@ -1,6 +1,4 @@
-using AirBro.TelegramBot.Models;
-using AirBro.TelegramBot.Services;
-using IQAirApiClient;
+using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
@@ -10,13 +8,11 @@ namespace AirBro.TelegramBot.Handlers;
 
 public sealed class BotHandlers : IBotHandlers
 {
-    private readonly IQAirService _airService;
-    private readonly Dictionary<long, UserProfile> _usersData;
+    private readonly IServiceProvider _serviceProvider;
 
-    public BotHandlers(IQAirService airService)
+    public BotHandlers(IServiceProvider serviceProvider)
     {
-        _airService = airService;
-        _usersData = new();
+        _serviceProvider = serviceProvider;
     }
     public Task HandleErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
     {
@@ -32,8 +28,10 @@ public sealed class BotHandlers : IBotHandlers
 
     public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
     {
-        IUpdateHandlers updateHandlers = new UpdateHandlers(_airService, _usersData);
+        using IServiceScope scope = _serviceProvider.CreateScope();
         
+        IUpdateHandlers updateHandlers = scope.ServiceProvider.GetRequiredService<IUpdateHandlers>();
+            
         var handler = update.Type switch
         {
             UpdateType.Message => updateHandlers.BotOnMessageReceived(botClient, update.Message, cancellationToken),

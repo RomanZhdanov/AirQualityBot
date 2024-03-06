@@ -8,6 +8,7 @@
         <RootNamespace>AirBro.TelegramBot</RootNamespace>
         <PackageId>TelegramBot</PackageId>
         <AssemblyName>AirBro.TelegramBot</AssemblyName>
+        <UserSecretsId>9e24b583-182f-4c16-b333-f1e608afd226</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>

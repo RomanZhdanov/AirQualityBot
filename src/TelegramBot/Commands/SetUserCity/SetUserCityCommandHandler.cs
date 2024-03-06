@@ -1,4 +1,5 @@
 using AirBro.TelegramBot.Models;
+using AirBro.TelegramBot.Services;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
@@ -6,9 +7,9 @@ namespace AirBro.TelegramBot.Commands.SetUserCity;
 
 public class SetUserCityCommandHandler : IBotCommandHandler
 {
-    private readonly Dictionary<long, UserProfile> _usersData;
+    private readonly UserDataService _usersData;
 
-    public SetUserCityCommandHandler(Dictionary<long, UserProfile> usersData)
+    public SetUserCityCommandHandler(UserDataService usersData)
     {
         _usersData = usersData;
     }
@@ -17,13 +18,8 @@ public class SetUserCityCommandHandler : IBotCommandHandler
     {
         var chatId = message.Chat.Id;
         var city = args[1];
-            
-        UserProfile userProfile = new UserProfile();
-            
-        if (!_usersData.TryAdd(chatId, userProfile))
-        {
-            userProfile = _usersData[chatId];
-        }
+
+        UserProfile userProfile = _usersData.GetUserProfile(chatId);
 
         userProfile.City = city;
 

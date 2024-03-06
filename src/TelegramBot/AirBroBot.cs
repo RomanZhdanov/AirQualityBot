@@ -31,7 +31,7 @@ public sealed class AirBroBot
             },
             cancellationToken: cancellationToken);
         
-        var me = await _bot.GetMeAsync();
+        var me = await _bot.GetMeAsync(cancellationToken: cancellationToken);
 
         Console.WriteLine($"Start listening for @{me.Username}");
         Console.ReadLine();
