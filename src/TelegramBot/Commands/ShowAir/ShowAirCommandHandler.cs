@@ -30,13 +30,9 @@ public class ShowAirCommandHandler : IBotCommandHandler
         var result = await _airService.GetAirForCity(userProfile.City, userProfile.State, userProfile.Country);
             
         var msgText = new StringBuilder();
-        msgText.AppendLine($"Pollution in {result.City}:");
-        msgText.AppendLine($"AQI US: {result.Current.Pollution.Aqius}");
-        msgText.AppendLine($"AQI China: {result.Current.Pollution.Aqicn}");
-        msgText.AppendLine($"main pollutant for US AQI: {result.Current.Pollution.Mainus}");
-        msgText.AppendLine($"main pollutant for Chinese AQI: {result.Current.Pollution.Maincn}");
-        msgText.AppendLine(
-            $"Date: {result.Current.Pollution.Ts.ToShortDateString()} Time: {result.Current.Pollution.Ts.ToShortTimeString()}");
+        msgText.AppendLine($"Ait quality in {result.Location.ToString()}:");
+        msgText.AppendLine($"AQI US: {result.Aqi} ({result.Quality})");
+        msgText.AppendLine($"LastUpdate: {result.LastUpdate.ToShortTimeString()}");
             
         await botClient.SendTextMessageAsync(
             chatId: chatId,

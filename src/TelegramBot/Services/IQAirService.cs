@@ -1,6 +1,7 @@
 using AirBro.TelegramBot.Models;
 using IQAirApiClient;
 using IQAirApiClient.Models;
+using Location = AirBro.TelegramBot.Models.Location;
 
 namespace AirBro.TelegramBot.Services;
 
@@ -20,9 +21,16 @@ public class IQAirService
         }
     }
     
-    public async Task<CityData> GetAirForCity(string city, string state, string country)
+    public async Task<AirQualityResult> GetAirForCity(string city, string state, string country)
     {
-        return await _iqAirClient.GetSpecifiedCityData(city, state, country);
+        var cityData = await _iqAirClient.GetSpecifiedCityData(city, state, country);
+
+        return new AirQualityResult()
+        {
+            Location = new Location(cityData.City, cityData.State, cityData.Country),
+            Aqi = cityData.Current.Pollution.Aqius,
+            LastUpdate = cityData.Current.Pollution.Ts
+        };
     }
 
     public IQAirService(IQAirApi iqAirClient)
