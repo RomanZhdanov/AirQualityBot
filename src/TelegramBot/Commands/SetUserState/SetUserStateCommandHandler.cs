@@ -32,7 +32,7 @@ public class SetUserStateCommandHandler : IBotCommandHandler
         userProfile.State = state;
 
         var citiesPage = await _airService.GetCitiesPage(userProfile.Country, userProfile.State, 1, 10);
-        var keyboard = InlineKeyboardHelper.GetCitiesPage(userProfile.Country, state, citiesPage);
+        var keyboard = MarkupHelper.GetCitiesPage(userProfile.Country, state, citiesPage);
 
         await botClient.EditMessageTextAsync(
             chatId: chatId,

@@ -21,7 +21,7 @@ public class UpdateStatesPageCommandHandler : IBotCommandHandler
         var page = int.Parse(args[2]);
         
         var statesPage = await _airService.GetStatesPage(country, page, 10);
-        var keyboard = InlineKeyboardHelper.GetStatesPage(country, statesPage);
+        var keyboard = MarkupHelper.GetStatesPage(country, statesPage);
             
         await botClient.EditMessageTextAsync(
             chatId: chatId,

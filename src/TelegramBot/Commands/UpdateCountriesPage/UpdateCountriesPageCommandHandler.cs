@@ -20,7 +20,7 @@ public class UpdateCountriesPageCommandHandler : IBotCommandHandler
         var page = int.Parse(args[1]);
 
         var countriesPage = _airService.GetCountriesPage(page, 10);
-        var keyboard = InlineKeyboardHelper.GetCountriesPage(countriesPage);
+        var keyboard = MarkupHelper.GetCountriesPage(countriesPage);
             
         await botClient.EditMessageTextAsync(
             chatId: chatId,

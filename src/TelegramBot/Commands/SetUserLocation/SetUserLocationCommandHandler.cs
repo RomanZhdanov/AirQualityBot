@@ -22,7 +22,7 @@ public class SetUserLocationCommandHandler : IBotCommandHandler
             
         var countriesPage = _airService.GetCountriesPage(1, 10);
         msg = $"Lets start from choosing a country. Select country ({countriesPage.TotalCount} available, page {countriesPage.PageNumber}/{countriesPage.TotalPages})";
-        keyboard = InlineKeyboardHelper.GetCountriesPage(countriesPage);
+        keyboard = MarkupHelper.GetCountriesPage(countriesPage);
             
         await botClient.SendTextMessageAsync(
             chatId: message.Chat.Id,

@@ -22,7 +22,7 @@ public class UpdateCitiesPageCommandHandler : IBotCommandHandler
         var page = int.Parse(args[3]);
 
         var citiesPage = await _airService.GetCitiesPage(country, state, page, 10);
-        var keyboard = InlineKeyboardHelper.GetCitiesPage(country, state, citiesPage);
+        var keyboard = MarkupHelper.GetCitiesPage(country, state, citiesPage);
             
         await botClient.EditMessageTextAsync(
             chatId: chatId,

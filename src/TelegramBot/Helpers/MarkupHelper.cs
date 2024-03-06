@@ -4,7 +4,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace AirBro.TelegramBot.Helpers;
 
-public static class InlineKeyboardHelper
+public static class MarkupHelper
 {
     public static InlineKeyboardMarkup GetCountriesPage(PaginatedList<CountryItem> countriesPage)
     {
