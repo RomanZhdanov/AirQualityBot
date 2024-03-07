@@ -1,5 +1,4 @@
 using AirBro.TelegramBot.Helpers;
-using AirBro.TelegramBot.Models;
 using AirBro.TelegramBot.Services;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -22,9 +21,7 @@ public class SetUserCountryCommandHandler : IBotCommandHandler
         var chatId = message.Chat.Id;
         var country = args[1];
 
-        UserProfile userProfile = _usersData.GetUserProfile(chatId);
-
-        userProfile.Country = country;
+        await _usersData.SaveUserLocationCountryAsync(chatId, country);
 
         var statesPage = await _airService.GetStatesPage(country, 1, 10);
         var keyboard = MarkupHelper.GetStatesPage(country, statesPage);

@@ -20,9 +20,9 @@ public class ShowAirCommandHandler : IBotCommandHandler
     {
         var chatId = message.Chat.Id;
 
-        UserProfile userProfile = _usersData.GetUserProfile(chatId);
+        var userLocation = await _usersData.GetUserLocationAsync(chatId);
         
-        var result = await _airService.GetAirForCity(userProfile.City, userProfile.State, userProfile.Country);
+        var result = await _airService.GetAirForCity(userLocation.City, userLocation.State, userLocation.Country);
             
         var msgText = new StringBuilder();
         msgText.AppendLine($"Ait quality in {result.Location.ToString()}:");

@@ -1,4 +1,3 @@
-using AirBro.TelegramBot.Models;
 using AirBro.TelegramBot.Services;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -19,9 +18,7 @@ public class SetUserCityCommandHandler : IBotCommandHandler
         var chatId = message.Chat.Id;
         var city = args[1];
 
-        UserProfile userProfile = _usersData.GetUserProfile(chatId);
-
-        userProfile.City = city;
+        await _usersData.SaveUserLocationCityAsync(chatId, city);
 
         await botClient.EditMessageTextAsync(
             chatId: chatId,

@@ -22,12 +22,11 @@ public class SetUserStateCommandHandler : IBotCommandHandler
         var chatId = message.Chat.Id;
         var state = args[1];
 
-        UserProfile userProfile = _usersData.GetUserProfile(chatId);
+        await _usersData.SaveUserLocationStateAsync(chatId, state);
+        var userLocation = await _usersData.GetUserLocationAsync(chatId);
 
-        userProfile.State = state;
-
-        var citiesPage = await _airService.GetCitiesPage(userProfile.Country, userProfile.State, 1, 10);
-        var keyboard = MarkupHelper.GetCitiesPage(userProfile.Country, state, citiesPage);
+        var citiesPage = await _airService.GetCitiesPage(userLocation.Country, userLocation.State, 1, 10);
+        var keyboard = MarkupHelper.GetCitiesPage(userLocation.Country, state, citiesPage);
 
         await botClient.EditMessageTextAsync(
             chatId: chatId,
