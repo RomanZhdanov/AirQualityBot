@@ -34,7 +34,7 @@ public class UpdateHandlers : IUpdateHandlers
             return;
         }
 
-        var args = query.Data.Split('|');
+        var args = query.Data.Split('?');
 
         if (args.Length > 0)
         {
@@ -43,8 +43,11 @@ public class UpdateHandlers : IUpdateHandlers
                 cancellationToken: cancellationToken);
 
             var command = args[0];
+            var cmdArgs = args.Length > 1
+                ? args[1].Split('|')
+                : null;
             var handler = _commandsManager.GetCommandHandler(command);
-            await handler.HandleAsync(botClient, query.Message, args, cancellationToken);
+            await handler.HandleAsync(botClient, query.Message, cmdArgs, cancellationToken);
         }
     }
 

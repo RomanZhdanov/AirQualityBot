@@ -1,11 +1,5 @@
-using AirBro.TelegramBot.Commands.SetUserCity;
-using AirBro.TelegramBot.Commands.SetUserCountry;
-using AirBro.TelegramBot.Commands.SetUserLocation;
-using AirBro.TelegramBot.Commands.SetUserState;
+using AirBro.TelegramBot.Commands.AddUserLocation;
 using AirBro.TelegramBot.Commands.ShowAir;
-using AirBro.TelegramBot.Commands.UpdateCitiesPage;
-using AirBro.TelegramBot.Commands.UpdateCountriesPage;
-using AirBro.TelegramBot.Commands.UpdateStatesPage;
 using AirBro.TelegramBot.Commands.Welcome;
 using AirBro.TelegramBot.Services;
 
@@ -17,14 +11,8 @@ public class CommandsManager
     private readonly UserDataService _usersData;
 
     private WelcomeCommandHandler? _welcomeCommandHandler;
-    private SetUserLocationCommandHandler? _setUserLocationCommandHandler;
+    private AddUserLocationCommandHandler? _addUserLocationCommandHandler;
     private ShowAirCommandHandler? _showAirCommandHandler;
-    private SetUserCountryCommandHandler? _setUserCountryCommandHandler;
-    private SetUserStateCommandHandler? _setUserStateCommandHandler;
-    private SetUserCityCommandHandler? _setUserCityCommandHandler;
-    private UpdateCountriesPageCommandHandler? _updateCountriesPageCommandHandler;
-    private UpdateStatesPageCommandHandler? _updateStatesPageCommandHandler;
-    private UpdateCitiesPageCommandHandler? _updateCitiesPageCommandHandler;
     
     public CommandsManager(IQAirService airService, UserDataService usersData)
     {
@@ -37,18 +25,11 @@ public class CommandsManager
         return command switch
         {
             "/example" => null,
-            "/add_location" => null,
+            "/add_location" => _addUserLocationCommandHandler ??= new AddUserLocationCommandHandler(_airService, _usersData),
             "/my_locations" => null,
             "/aqi_guide" => null,
             "/settings" => null,
-            "/set_location" => _setUserLocationCommandHandler ??= new SetUserLocationCommandHandler(_airService),
             "/show_air" => _showAirCommandHandler ??= new ShowAirCommandHandler(_airService, _usersData),
-            "set_country" => _setUserCountryCommandHandler ??= new SetUserCountryCommandHandler(_airService, _usersData),
-            "set_state" => _setUserStateCommandHandler ??= new SetUserStateCommandHandler(_airService, _usersData),
-            "set_city" => _setUserCityCommandHandler ??= new SetUserCityCommandHandler(_usersData),
-            "countries_page" => _updateCountriesPageCommandHandler ??= new UpdateCountriesPageCommandHandler(_airService),
-            "states_page" => _updateStatesPageCommandHandler ??= new UpdateStatesPageCommandHandler(_airService),
-            "cities_page" => _updateCitiesPageCommandHandler ??= new UpdateCitiesPageCommandHandler(_airService),
             _ => _welcomeCommandHandler ??= new WelcomeCommandHandler()
         };
     }
