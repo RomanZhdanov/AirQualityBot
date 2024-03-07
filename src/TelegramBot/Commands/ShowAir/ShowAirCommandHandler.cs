@@ -1,5 +1,4 @@
 using System.Text;
-using AirBro.TelegramBot.Models;
 using AirBro.TelegramBot.Services;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -21,6 +20,16 @@ public class ShowAirCommandHandler : IBotCommandHandler
         var chatId = message.Chat.Id;
 
         var userLocation = await _usersData.GetUserLocationAsync(chatId);
+
+        if (userLocation.City is null || userLocation.State is null || userLocation.Country is null)
+        {
+            await botClient.SendTextMessageAsync(
+                chatId: chatId,
+                text: "You don't have set any location. Do it with /set_location command.",
+                cancellationToken: cancellationToken);
+            
+            return;
+        }
         
         var result = await _airService.GetAirForCity(userLocation.City, userLocation.State, userLocation.Country);
             
