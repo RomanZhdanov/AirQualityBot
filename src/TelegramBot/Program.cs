@@ -35,6 +35,7 @@ using var host = Host.CreateDefaultBuilder(args)
         services.AddHostedService<BotService>();
         services.AddSingleton<AirBroBot>();
         services.AddSingleton<IQAirService>();
+        services.AddSingleton<TempUserDataService>();
         services.AddSingleton<IBotHandlers, BotHandlers>();
         services.AddScoped<IUpdateHandlers, UpdateHandlers>();
         services.AddScoped<UserDataService>();

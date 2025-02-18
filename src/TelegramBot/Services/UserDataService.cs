@@ -1,6 +1,7 @@
 using AirBro.TelegramBot.Data;
 using AirBro.TelegramBot.Data.Models;
 using Microsoft.EntityFrameworkCore;
+using Location = AirBro.TelegramBot.Models.Location;
 
 namespace AirBro.TelegramBot.Services;
 
@@ -13,51 +14,48 @@ public class UserDataService
         _context = context;
     }
 
-    public async Task<UserLocation> GetUserLocationAsync(long chatId)
+    public async Task<IReadOnlyCollection<Data.Models.Location>> GetUserLocationsAsync(long chatId)
     {
-        try
-        {
-            var userLocation = await _context.UsersLocations.SingleOrDefaultAsync(u => u.ChatId == chatId);
+        var user = await _context.Users
+            .Include(u => u.Locations)
+            .SingleOrDefaultAsync(u => u.Id == chatId);
 
-            if (userLocation is null)
+        if (user is null)
+        {
+            return new List<Data.Models.Location>();
+        }
+        
+        return user.Locations.AsReadOnly();
+    }
+
+    public async Task AddUserLocationAsync(long chatid, Location location)
+    {
+        var user = await _context.Users.FindAsync(chatid);
+
+        if (user is null)
+        {
+            user = new User { Id = chatid };
+            _context.Users.Add(user);
+        }
+
+        var loc = await _context.Locations
+            .SingleOrDefaultAsync(l =>
+                l.Country == location.Country && 
+                l.State == location.State && 
+                l.City == location.City);
+
+        if (loc is null)
+        {
+            loc = new Data.Models.Location
             {
-                userLocation = new UserLocation(chatId);
-                _context.Add(userLocation);
-            }
-
-            return userLocation;
+                Country = location.Country,
+                State = location.State,
+                City = location.City
+            };
+            _context.Locations.Add(loc);
         }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-    }
-
-    public async Task SaveUserLocationCityAsync(long chatId, string city)
-    {
-        var userLocation = await GetUserLocationAsync(chatId);
-
-        userLocation.City = city;
-
-        await _context.SaveChangesAsync();
-    }
-    
-    public async Task SaveUserLocationStateAsync(long chatId, string state)
-    {
-        var userLocation = await GetUserLocationAsync(chatId);
-
-        userLocation.State = state;
-
-        await _context.SaveChangesAsync();
-    }
-    
-    public async Task SaveUserLocationCountryAsync(long chatId, string country)
-    {
-        var userLocation = await GetUserLocationAsync(chatId);
-
-        userLocation.Country = country;
-
+        
+        user.Locations.Add(loc);
         await _context.SaveChangesAsync();
     }
 }

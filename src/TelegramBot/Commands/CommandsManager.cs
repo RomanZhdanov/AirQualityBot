@@ -9,15 +9,17 @@ public class CommandsManager
 {
     private readonly IQAirService _airService;
     private readonly UserDataService _usersData;
+    private readonly TempUserDataService _tempUserData;
 
     private WelcomeCommandHandler? _welcomeCommandHandler;
     private AddUserLocationCommandHandler? _addUserLocationCommandHandler;
     private ShowAirCommandHandler? _showAirCommandHandler;
     
-    public CommandsManager(IQAirService airService, UserDataService usersData)
+    public CommandsManager(IQAirService airService, UserDataService usersData, TempUserDataService tempUserData)
     {
         _airService = airService;
         _usersData = usersData;
+        _tempUserData = tempUserData;
     }
     
     public IBotCommandHandler GetCommandHandler(string command)
@@ -25,7 +27,7 @@ public class CommandsManager
         return command switch
         {
             "/example" => null,
-            "/add_location" => _addUserLocationCommandHandler ??= new AddUserLocationCommandHandler(_airService, _usersData),
+            "/add_location" => _addUserLocationCommandHandler ??= new AddUserLocationCommandHandler(_airService, _usersData, _tempUserData),
             "/my_locations" => null,
             "/aqi_guide" => null,
             "/settings" => null,

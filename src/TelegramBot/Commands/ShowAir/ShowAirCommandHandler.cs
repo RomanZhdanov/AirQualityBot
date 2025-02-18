@@ -19,28 +19,32 @@ public class ShowAirCommandHandler : IBotCommandHandler
     {
         var chatId = message.Chat.Id;
 
-        var userLocation = await _usersData.GetUserLocationAsync(chatId);
+        var locations = await _usersData.GetUserLocationsAsync(chatId);
 
-        if (userLocation.City is null || userLocation.State is null || userLocation.Country is null)
+        foreach (var userLocation in locations)
         {
+            if (userLocation.City is null || userLocation.State is null || userLocation.Country is null)
+            {
+                await botClient.SendTextMessageAsync(
+                    chatId: chatId,
+                    text: "You don't have set any location. Do it with /set_location command.",
+                    cancellationToken: cancellationToken);
+
+                return;
+            }
+
+
+            var result = await _airService.GetAirForCity(userLocation.City, userLocation.State, userLocation.Country);
+
+            var msgText = new StringBuilder();
+            msgText.AppendLine($"Air quality in {result.Location.ToString()}:");
+            msgText.AppendLine($"AQI US: {result.Aqi} ({result.Quality})");
+            msgText.AppendLine($"Last update: {result.LastUpdate.ToShortTimeString()}");
+
             await botClient.SendTextMessageAsync(
                 chatId: chatId,
-                text: "You don't have set any location. Do it with /set_location command.",
+                text: msgText.ToString(),
                 cancellationToken: cancellationToken);
-            
-            return;
         }
-        
-        var result = await _airService.GetAirForCity(userLocation.City, userLocation.State, userLocation.Country);
-            
-        var msgText = new StringBuilder();
-        msgText.AppendLine($"Ait quality in {result.Location.ToString()}:");
-        msgText.AppendLine($"AQI US: {result.Aqi} ({result.Quality})");
-        msgText.AppendLine($"LastUpdate: {result.LastUpdate.ToShortTimeString()}");
-            
-        await botClient.SendTextMessageAsync(
-            chatId: chatId,
-            text: msgText.ToString(),
-            cancellationToken: cancellationToken);
     }
 }

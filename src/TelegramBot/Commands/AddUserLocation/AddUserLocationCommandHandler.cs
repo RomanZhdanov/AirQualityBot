@@ -2,7 +2,6 @@ using AirBro.TelegramBot.Helpers;
 using AirBro.TelegramBot.Services;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.ReplyMarkups;
 
 namespace AirBro.TelegramBot.Commands.AddUserLocation;
 
@@ -10,11 +9,13 @@ public class AddUserLocationCommandHandler : IBotCommandHandler
 {
     private readonly IQAirService _airService;
     private readonly UserDataService _usersData;
+    private readonly TempUserDataService _tempUserData;
 
-    public AddUserLocationCommandHandler(IQAirService airService, UserDataService usersData)
+    public AddUserLocationCommandHandler(IQAirService airService, UserDataService usersData, TempUserDataService tempUserData)
     {
         _airService = airService;
         _usersData = usersData;
+        _tempUserData = tempUserData;
     }
 
     public async Task HandleAsync(ITelegramBotClient botClient, Message message, string[]? args, CancellationToken cancellationToken)
@@ -95,7 +96,8 @@ public class AddUserLocationCommandHandler : IBotCommandHandler
         {
             var country = args[1];
 
-            await _usersData.SaveUserLocationCountryAsync(chatId, country);
+            var userLocation = _tempUserData.GetUserLocation(chatId);
+            userLocation.Country = country;
 
             return await GetStatesPage(country, 1);
         }
@@ -104,8 +106,8 @@ public class AddUserLocationCommandHandler : IBotCommandHandler
         {
             var state = args[1];
 
-            await _usersData.SaveUserLocationStateAsync(chatId, state);
-            var userLocation = await _usersData.GetUserLocationAsync(chatId);
+            var userLocation = _tempUserData.GetUserLocation(chatId);
+            userLocation.State = state;
 
             return await GetCitiesPage(userLocation.Country, userLocation.State, 1);
         }
@@ -114,7 +116,10 @@ public class AddUserLocationCommandHandler : IBotCommandHandler
         {
             var city = args[1];
 
-            await _usersData.SaveUserLocationCityAsync(chatId, city);
+            var userLocation = _tempUserData.GetUserLocation(chatId);
+            userLocation.City = city;
+
+            await _usersData.AddUserLocationAsync(chatId, userLocation);
 
             return await botClient.EditMessageTextAsync(
                 chatId: chatId,

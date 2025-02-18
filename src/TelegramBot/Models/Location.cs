@@ -2,11 +2,18 @@ namespace AirBro.TelegramBot.Models;
 
 public class Location
 {
-    public string City { get; }
+    public string? City { get; set; }
 
-    public string State { get; }
+    public string? State { get; set; }
 
-    public string Country { get; }
+    public string? Country { get; set; }
+
+    public Location()
+    {
+        City = null;
+        State = null;
+        Country = null;
+    }
 
     public Location(string city, string state, string country)
     {
