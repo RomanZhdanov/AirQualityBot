@@ -24,8 +24,8 @@ public class UserDataService
         {
             return new List<Data.Models.Location>();
         }
-        
-        return user.Locations.AsReadOnly();
+
+        return user.Locations.OrderBy(l => l.City).ToList();
     }
 
     public async Task AddUserLocationAsync(long chatid, Location location)
