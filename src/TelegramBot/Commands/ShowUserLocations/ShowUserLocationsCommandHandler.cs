@@ -19,6 +19,16 @@ public class ShowUserLocationsCommandHandler : IBotCommandHandler
         
         var locations = await _userData.GetUserLocationsAsync(chatId);
 
+        if (locations.Count == 0)
+        {
+            await botClient.SendTextMessageAsync(
+                chatId: chatId,
+                text: "You haven't set any location yet! Use the /set_location command.",
+                cancellationToken: cancellationToken);
+
+            return;
+        }
+        
         foreach (var location in locations)
         {
             await botClient.SendTextMessageAsync(

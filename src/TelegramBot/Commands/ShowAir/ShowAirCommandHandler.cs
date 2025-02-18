@@ -27,7 +27,7 @@ public class ShowAirCommandHandler : IBotCommandHandler
             {
                 await botClient.SendTextMessageAsync(
                     chatId: chatId,
-                    text: "You don't have set any location. Do it with /set_location command.",
+                    text: "You haven't set any location yet! Use the /set_location command.",
                     cancellationToken: cancellationToken);
 
                 return;
