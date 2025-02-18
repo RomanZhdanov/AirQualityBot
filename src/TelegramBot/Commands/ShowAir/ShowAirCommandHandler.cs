@@ -21,30 +21,32 @@ public class ShowAirCommandHandler : IBotCommandHandler
 
         var locations = await _usersData.GetUserLocationsAsync(chatId);
 
-        foreach (var userLocation in locations)
+        if (locations.Count == 0)
         {
-            if (userLocation.City is null || userLocation.State is null || userLocation.Country is null)
-            {
-                await botClient.SendTextMessageAsync(
-                    chatId: chatId,
-                    text: "You haven't set any location yet! Use the /set_location command.",
-                    cancellationToken: cancellationToken);
-
-                return;
-            }
-
-
-            var result = await _airService.GetAirForCity(userLocation.City, userLocation.State, userLocation.Country);
-
-            var msgText = new StringBuilder();
-            msgText.AppendLine($"Air quality in {result.Location.ToString()}:");
-            msgText.AppendLine($"AQI US: {result.Aqi} ({result.Quality})");
-            msgText.AppendLine($"Last update: {result.LastUpdate.ToShortTimeString()}");
-
             await botClient.SendTextMessageAsync(
                 chatId: chatId,
-                text: msgText.ToString(),
+                text: "You haven't set any location yet! Use the /set_location command.",
                 cancellationToken: cancellationToken);
+
+            return;
         }
+        
+        var msgText = new StringBuilder();
+        msgText.AppendLine($"Air quality in your locations (AQI US):");
+        msgText.AppendLine();
+        
+        foreach (var location in locations)
+        {
+            var result = await _airService.GetAirForCity(location.City, location.State, location.Country);
+
+            msgText.AppendLine($"{result.Location.ToString()}: {result.Aqi} ({result.Quality})");
+            msgText.AppendLine($"Last update: {result.LastUpdate.ToShortTimeString()}");
+            msgText.AppendLine();
+        }
+        
+        await botClient.SendTextMessageAsync(
+            chatId: chatId,
+            text: msgText.ToString(),
+            cancellationToken: cancellationToken);
     }
 }
