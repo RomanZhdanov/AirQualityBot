@@ -11,4 +11,9 @@ public class Location
     public string City { get; set; }
     
     public List<User> Users { get; } = [];
+    
+    public override string ToString()
+    {
+        return $"{City} ({Country})";
+    }
 }
