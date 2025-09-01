@@ -9,6 +9,8 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<User> Users => Set<User>();
     
+    public DbSet<Country> Countries => Set<Country>();
+    
     public DbSet<Location> Locations => Set<Location>();
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -2,6 +2,7 @@
 using AirBro.TelegramBot.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,27 +10,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AirBro.TelegramBot.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250831194631_AddLocationsHealthy")]
+    partial class AddLocationsHealthy
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.2");
-
-            modelBuilder.Entity("AirBro.TelegramBot.Data.Models.Country", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Countries");
-                });
 
             modelBuilder.Entity("AirBro.TelegramBot.Data.Models.Location", b =>
                 {
@@ -40,8 +28,9 @@ namespace AirBro.TelegramBot.Data.Migrations
                     b.Property<string>("City")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("CountryId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("Healthy")
                         .HasColumnType("INTEGER");
@@ -51,8 +40,6 @@ namespace AirBro.TelegramBot.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CountryId");
 
                     b.ToTable("Locations");
                 });
@@ -81,17 +68,6 @@ namespace AirBro.TelegramBot.Data.Migrations
                     b.HasIndex("LocationId");
 
                     b.ToTable("UserLocation");
-                });
-
-            modelBuilder.Entity("AirBro.TelegramBot.Data.Models.Location", b =>
-                {
-                    b.HasOne("AirBro.TelegramBot.Data.Models.Country", "Country")
-                        .WithMany()
-                        .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Country");
                 });
 
             modelBuilder.Entity("UserLocation", b =>
