@@ -13,7 +13,7 @@ public static class MarkupHelper
         {
             var buttonRow = new List<InlineKeyboardButton>
             {
-                InlineKeyboardButton.WithCallbackData(country.Country, $"/add_location?set_country|{country.Country}")
+                InlineKeyboardButton.WithCallbackData(country.Country, $"SetCountry|{country.Country}")
             };
             buttonRows.Add(buttonRow);
         }
@@ -22,12 +22,12 @@ public static class MarkupHelper
 
         if (countriesPage.HasPreviousPage)
         {
-            navigationButtons.Add(InlineKeyboardButton.WithCallbackData("<<", $"/add_location?countries_page|{countriesPage.PageNumber - 1}"));
+            navigationButtons.Add(InlineKeyboardButton.WithCallbackData("<<", $"CountriesPage|{countriesPage.PageNumber - 1}"));
         }
 
         if (countriesPage.HasNextPage)
         {
-            navigationButtons.Add(InlineKeyboardButton.WithCallbackData(">>", $"/add_location?countries_page|{countriesPage.PageNumber + 1}"));
+            navigationButtons.Add(InlineKeyboardButton.WithCallbackData(">>", $"CountriesPage|{countriesPage.PageNumber + 1}"));
         }
         
         buttonRows.Add(navigationButtons);
@@ -42,7 +42,7 @@ public static class MarkupHelper
         {
             var buttonRow = new List<InlineKeyboardButton>
             {
-                InlineKeyboardButton.WithCallbackData(state.State, $"/add_location?set_state|{state.State}")
+                InlineKeyboardButton.WithCallbackData(state.State, $"SetState|{country}|{state.State}")
             };
             buttonRows.Add(buttonRow);
         }
@@ -51,12 +51,12 @@ public static class MarkupHelper
 
         if (statesPage.HasPreviousPage)
         {
-            navigationButtons.Add(InlineKeyboardButton.WithCallbackData("<<", $"/add_location?|states_page|{country}|{statesPage.PageNumber - 1}"));
+            navigationButtons.Add(InlineKeyboardButton.WithCallbackData("<<", $"StatesPage|{country}|{statesPage.PageNumber - 1}"));
         }
 
         if (statesPage.HasNextPage)
         {
-            navigationButtons.Add(InlineKeyboardButton.WithCallbackData(">>", $"/add_location?states_page|{country}|{statesPage.PageNumber + 1}"));
+            navigationButtons.Add(InlineKeyboardButton.WithCallbackData(">>", $"StatesPage|{country}|{statesPage.PageNumber + 1}"));
         }
         
         buttonRows.Add(navigationButtons);
@@ -71,7 +71,7 @@ public static class MarkupHelper
         {
             var buttonRow = new List<InlineKeyboardButton>
             {
-                InlineKeyboardButton.WithCallbackData(city.City, $"/add_location?set_city|{city.City}")
+                InlineKeyboardButton.WithCallbackData(city.City, $"SetCity|{city.City}")
             };
             buttonRows.Add(buttonRow);
         }
@@ -80,12 +80,12 @@ public static class MarkupHelper
 
         if (citiesPage.HasPreviousPage)
         {
-            navigationButtons.Add(InlineKeyboardButton.WithCallbackData("<<", $"/add_location?cities_page|{country}|{state}|{citiesPage.PageNumber - 1}"));
+            navigationButtons.Add(InlineKeyboardButton.WithCallbackData("<<", $"CitiesPage|{country}|{state}|{citiesPage.PageNumber - 1}"));
         }
 
         if (citiesPage.HasNextPage)
         {
-            navigationButtons.Add(InlineKeyboardButton.WithCallbackData(">>", $"/add_location?cities_page|{country}|{state}|{citiesPage.PageNumber + 1}"));
+            navigationButtons.Add(InlineKeyboardButton.WithCallbackData(">>", $"CitiesPage|{country}|{state}|{citiesPage.PageNumber + 1}"));
         }
         
         buttonRows.Add(navigationButtons);

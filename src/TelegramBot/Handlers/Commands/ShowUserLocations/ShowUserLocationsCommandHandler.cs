@@ -1,10 +1,9 @@
 using AirBro.TelegramBot.Services;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace AirBro.TelegramBot.Commands.ShowUserLocations;
+namespace AirBro.TelegramBot.Handlers.Commands.ShowUserLocations;
 
 public class ShowUserLocationsCommandHandler : IBotCommandHandler
 {
@@ -15,7 +14,7 @@ public class ShowUserLocationsCommandHandler : IBotCommandHandler
         _userData = userData;
     }
 
-    public async Task HandleAsync(ITelegramBotClient botClient, Message message, string[]? args, CancellationToken cancellationToken)
+    public async Task HandleAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
         var chatId = message.Chat.Id;
         
@@ -23,7 +22,7 @@ public class ShowUserLocationsCommandHandler : IBotCommandHandler
 
         if (locations.Count == 0)
         {
-            await botClient.SendTextMessageAsync(
+            await botClient.SendMessage(
                 chatId: chatId,
                 text: "You haven't set any location yet! Use the /set_location command.",
                 cancellationToken: cancellationToken);
@@ -31,7 +30,7 @@ public class ShowUserLocationsCommandHandler : IBotCommandHandler
             return;
         }
         
-        IReplyMarkup keyboard = new ReplyKeyboardRemove();
+        ReplyMarkup keyboard = new ReplyKeyboardRemove();
         var buttonRows = new List<List<InlineKeyboardButton>>();
         
         foreach (var location in locations)
@@ -46,7 +45,7 @@ public class ShowUserLocationsCommandHandler : IBotCommandHandler
         
         keyboard = new InlineKeyboardMarkup(buttonRows);
             
-        await botClient.SendTextMessageAsync(
+        await botClient.SendMessage(
             chatId: chatId,
             text: "Your locations:",
             replyMarkup: keyboard,

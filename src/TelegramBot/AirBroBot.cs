@@ -24,14 +24,14 @@ public sealed class AirBroBot
     {
         _bot.StartReceiving(
             updateHandler: _handlers.HandleUpdateAsync,
-            pollingErrorHandler: _handlers.HandleErrorAsync,
+            errorHandler: _handlers.HandleErrorAsync,
             receiverOptions: new ReceiverOptions()
             {
                 AllowedUpdates = Array.Empty<UpdateType>()
             },
             cancellationToken: cancellationToken);
         
-        var me = await _bot.GetMeAsync(cancellationToken: cancellationToken);
+        var me = await _bot.GetMe(cancellationToken: cancellationToken);
 
         Console.WriteLine($"Start listening for @{me.Username}");
         Console.ReadLine();

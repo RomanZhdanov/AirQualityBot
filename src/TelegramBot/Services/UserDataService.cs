@@ -18,6 +18,7 @@ public class UserDataService
     {
         var user = await _context.Users
             .Include(u => u.Locations)
+            .ThenInclude(l => l.Country)
             .SingleOrDefaultAsync(u => u.Id == chatId);
 
         if (user is null)

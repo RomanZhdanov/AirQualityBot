@@ -1,9 +1,10 @@
 using System.Text;
+using AirBro.TelegramBot.Handlers;
 using AirBro.TelegramBot.Services;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
-namespace AirBro.TelegramBot.Commands.ShowAir;
+namespace AirBro.TelegramBot.Handlers.Commands.ShowAir;
 
 public class ShowAirCommandHandler : IBotCommandHandler
 {
@@ -15,7 +16,7 @@ public class ShowAirCommandHandler : IBotCommandHandler
         _airService = airService;
         _usersData = usersData;
     }
-    public async Task HandleAsync(ITelegramBotClient botClient, Message message, string[] args, CancellationToken cancellationToken)
+    public async Task HandleAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
         var chatId = message.Chat.Id;
 
@@ -23,7 +24,7 @@ public class ShowAirCommandHandler : IBotCommandHandler
 
         if (locations.Count == 0)
         {
-            await botClient.SendTextMessageAsync(
+            await botClient.SendMessage(
                 chatId: chatId,
                 text: "You haven't set any location yet! Use the /set_location command.",
                 cancellationToken: cancellationToken);
@@ -37,14 +38,14 @@ public class ShowAirCommandHandler : IBotCommandHandler
         
         foreach (var location in locations)
         {
-            var result = await _airService.GetAirForCity(location.City, location.State, location.Country);
+            var result = await _airService.GetAirForCity(location.City, location.State, location.Country.Name);
 
             msgText.AppendLine($"{result.Location.ToString()}: {result.Aqi} ({result.Quality})");
             msgText.AppendLine($"Last update: {result.LastUpdate.ToShortTimeString()}");
             msgText.AppendLine();
         }
         
-        await botClient.SendTextMessageAsync(
+        await botClient.SendMessage(
             chatId: chatId,
             text: msgText.ToString(),
             cancellationToken: cancellationToken);

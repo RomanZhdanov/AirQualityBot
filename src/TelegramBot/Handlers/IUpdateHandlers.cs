@@ -5,9 +5,9 @@ namespace AirBro.TelegramBot.Handlers;
 
 public interface IUpdateHandlers
 {
-    Task BotOnMessageReceived(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken);
+    Task HandleMessageAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken);
 
-    Task BotOnCallbackQueryReceived(ITelegramBotClient botClient, CallbackQuery query, CancellationToken cancellationToken);
+    Task HndleCallbackQueryAsync(ITelegramBotClient botClient, CallbackQuery query, CancellationToken cancellationToken);
 
-    Task UnknownUpdateHandlerAsync(ITelegramBotClient botClient, Update update);
+    Task HandleUnknownAsync(ITelegramBotClient botClient, Update update);
 }

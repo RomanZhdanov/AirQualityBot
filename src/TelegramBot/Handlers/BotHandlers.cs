@@ -34,10 +34,10 @@ public sealed class BotHandlers : IBotHandlers
             
         var handler = update.Type switch
         {
-            UpdateType.Message => updateHandlers.BotOnMessageReceived(botClient, update.Message, cancellationToken),
-            UpdateType.EditedMessage => updateHandlers.BotOnMessageReceived(botClient, update.EditedMessage, cancellationToken),
-            UpdateType.CallbackQuery => updateHandlers.BotOnCallbackQueryReceived(botClient, update.CallbackQuery, cancellationToken),
-            _ => updateHandlers.UnknownUpdateHandlerAsync(botClient, update)
+            UpdateType.Message => updateHandlers.HandleMessageAsync(botClient, update.Message, cancellationToken),
+            UpdateType.EditedMessage => updateHandlers.HandleMessageAsync(botClient, update.EditedMessage, cancellationToken),
+            UpdateType.CallbackQuery => updateHandlers.HndleCallbackQueryAsync(botClient, update.CallbackQuery, cancellationToken),
+            _ => updateHandlers.HandleUnknownAsync(botClient, update)
         };
 
         try
