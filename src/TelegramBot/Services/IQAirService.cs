@@ -13,7 +13,7 @@ public class IQAirService
     private Dictionary<string, IList<StateItem>> _statesDictionary = new();
     private Dictionary<string, IList<CityItem>> _citiesDictionary = new();
 
-    private IList<CountryItem>? CountriesList
+    public IList<CountryItem>? CountriesList
     {
         get
         {
@@ -49,7 +49,7 @@ public class IQAirService
         return new PaginatedList<CountryItem>(countries, CountriesList.Count, page, pageSize);
     }
     
-    private async Task<IList<StateItem>> GetStatesForCountry(string country)
+    public async Task<IList<StateItem>> GetStatesForCountry(string country)
     {
         IList<StateItem> states;
         
@@ -90,7 +90,7 @@ public class IQAirService
         return new PaginatedList<CityItem>(citiesPage, cities.Count, page, pageSize);
     }
 
-    private async Task<IList<CityItem>> GetCities(string country, string state)
+    public async Task<IList<CityItem>?> GetCities(string country, string state)
     {
         IList<CityItem> cities;
         var key = $"{country}|{state}";
@@ -102,7 +102,10 @@ public class IQAirService
         else
         {
             cities = await _iqAirClient.ListSupportedCitiesInState(country, state);
-            _citiesDictionary.Add(key, cities);
+            if (cities is not null)
+            {
+                _citiesDictionary.Add(key, cities);
+            }
         }
 
         return cities;

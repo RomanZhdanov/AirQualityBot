@@ -41,6 +41,7 @@ using var host = Host.CreateDefaultBuilder(args)
         services.AddScoped<UserDataService>();
         services.AddScoped<CommandsManager>();
         services.AddTransient<IQAirApi, IQAirApiClient.IQAirApiClient>();
+        services.AddTransient<LocationsInitializer>();
         services.AddHttpClient();
     })
     .Build();
@@ -57,6 +58,9 @@ using (var scope = host.Services.CreateScope())
         {
             context.Database.Migrate();
         }
+        
+        var locationsInit = services.GetRequiredService<LocationsInitializer>();
+        await locationsInit.StartAsync();
     }
     catch (Exception ex)
     {

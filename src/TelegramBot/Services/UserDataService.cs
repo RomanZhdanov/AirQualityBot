@@ -37,10 +37,17 @@ public class UserDataService
             user = new User { Id = chatid };
             _context.Users.Add(user);
         }
+        
+        var country = await _context.Countries.SingleOrDefaultAsync(c => c.Name == location.Country);
+
+        if (country is null)
+        {
+            return;
+        }
 
         var loc = await _context.Locations
             .SingleOrDefaultAsync(l =>
-                l.Country == location.Country && 
+                l.CountryId == country.Id && 
                 l.State == location.State && 
                 l.City == location.City);
 
@@ -48,7 +55,7 @@ public class UserDataService
         {
             loc = new Data.Models.Location
             {
-                Country = location.Country,
+                CountryId = country.Id,
                 State = location.State,
                 City = location.City
             };
