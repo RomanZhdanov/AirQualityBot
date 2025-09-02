@@ -10,6 +10,7 @@ public static class ServiceCollectionExtentions
     {
         services.AddSingleton<IBotHandlers, BotHandlers>();
         services.AddSingleton<IUpdateHandlers, UpdateHandlers>();
+        services.AddScoped<MessageTextHandler>();
         
         var assembly = Assembly.GetExecutingAssembly();
         var implementations = assembly.GetTypes()

@@ -33,7 +33,8 @@ public class UpdateHandlers : IUpdateHandlers
             { "SetCity", typeof(SetCityQueryHandler) },
             { "CountriesPage", typeof(CountriesPageQueryHandler)},
             { "StatesPage", typeof(StatesPageQueryHandler)},
-            { "CitiesPage", typeof(CitiesPageQueryHandler) }
+            { "CitiesPage", typeof(CitiesPageQueryHandler) },
+            { "SearchCountry", typeof(SearchCountryQueryHandler) },
         };
     }
     
@@ -43,28 +44,38 @@ public class UpdateHandlers : IUpdateHandlers
 
         if (input != null)
         {
-            if (_commands.TryGetValue(input, out var commandType))
+            if (input.StartsWith('/'))
             {
-                try
+                if (_commands.TryGetValue(input, out var commandType))
                 {
-                    using var scope = _serviceProvider.CreateScope();
-                    var handler = scope.ServiceProvider.GetRequiredService(commandType) as IBotCommandHandler ?? throw new InvalidOperationException();
-                    await handler.HandleAsync(botClient, message, cancellationToken);
+                    try
+                    {
+                        using var scope = _serviceProvider.CreateScope();
+                        var handler = scope.ServiceProvider.GetRequiredService(commandType) as IBotCommandHandler ??
+                                      throw new InvalidOperationException();
+                        await handler.HandleAsync(botClient, message, cancellationToken);
+                    }
+                    catch (Exception e)
+                    {
+                        await botClient.SendMessage(
+                            chatId: message.Chat.Id,
+                            text: $"There was an error: {e.Message}",
+                            cancellationToken: cancellationToken);
+                    }
                 }
-                catch (Exception e)
+                else
                 {
                     await botClient.SendMessage(
                         chatId: message.Chat.Id,
-                        text: $"There was an error: {e.Message}",
+                        text: $"Can't find handler for this command",
                         cancellationToken: cancellationToken);
                 }
             }
             else
             {
-                await botClient.SendMessage(
-                    chatId:  message.Chat.Id,
-                    text: $"Can't find handler for this command",
-                    cancellationToken: cancellationToken);
+                using var scope = _serviceProvider.CreateScope();
+                var handler = scope.ServiceProvider.GetRequiredService<MessageTextHandler>();
+                await handler.HandleAsync(botClient, message, cancellationToken);
             }
         }
     }
