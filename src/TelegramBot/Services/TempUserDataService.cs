@@ -6,6 +6,8 @@ public class TempUserDataService
 {
     private readonly Dictionary<long, Location> _usersLocations = new();
 
+    public UserStates State { get; set; }
+
     public Location GetUserLocation(long chatId)
     {
         var userLocation = new Location();

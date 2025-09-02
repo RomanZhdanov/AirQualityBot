@@ -10,9 +10,10 @@ public class AddUserLocationCommandHandler : IBotCommandHandler
     {
         var chatId = message.Chat.Id;
         
-        var msg = $"Lets start from choosing a country. Just send me a country name and I'll try to find it. Alternatively you can select it manually from countries list.";
+        var msg = $"Lets start from choosing a country.";
         var buttons = new List<InlineKeyboardButton>();
             
+        buttons.Add(InlineKeyboardButton.WithCallbackData("Search", "SearchCountry"));
         buttons.Add(InlineKeyboardButton.WithCallbackData("Select from list", "CountriesPage|1"));
             
         var keyboard = new InlineKeyboardMarkup(buttons);

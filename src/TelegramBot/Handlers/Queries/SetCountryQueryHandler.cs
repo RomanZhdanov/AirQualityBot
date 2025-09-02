@@ -1,3 +1,4 @@
+using AirBro.TelegramBot.Models;
 using AirBro.TelegramBot.Services;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -24,6 +25,7 @@ public class SetCountryQueryHandler : IBotQueryHandler
 
         var userLocation = _tempUserDataService.GetUserLocation(chatId);
         userLocation.Country = country;
+        _tempUserDataService.State = UserStates.None;
 
         var msg = $"Country {country} has been saved. Now you need to select state for that country";
         
