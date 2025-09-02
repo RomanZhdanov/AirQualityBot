@@ -6,10 +6,10 @@ namespace AirBro.TelegramBot.Services;
 
 public class LocationsInitializer
 {
-   private readonly IQAirService _airService;
+   private readonly IAirQualityService _airService;
    private readonly ApplicationDbContext _dbContext;
 
-   public LocationsInitializer(IQAirService airService, ApplicationDbContext dbContext)
+   public LocationsInitializer(IAirQualityService airService, ApplicationDbContext dbContext)
    {
       _airService = airService;
       _dbContext = dbContext;
@@ -17,7 +17,7 @@ public class LocationsInitializer
 
    public async Task StartAsync()
    {
-      var countries = _airService.CountriesList;
+      var countries = await _airService.GetCountries();
 
       foreach (var country in countries)
       {

@@ -5,29 +5,20 @@ using Location = AirBro.TelegramBot.Models.Location;
 
 namespace AirBro.TelegramBot.Services;
 
-public class IQAirService
+public class IQAirService : IAirQualityService 
 {
     private readonly IQAirApi _iqAirClient;
 
-    private IList<CountryItem>? _countriesList;
-    private Dictionary<string, IList<StateItem>> _statesDictionary = new();
-    private Dictionary<string, IList<CityItem>> _citiesDictionary = new();
-
-    public IList<CountryItem>? CountriesList
-    {
-        get
-        {
-            return _countriesList ??= _iqAirClient.ListSupportedCountries().Result;
-        }
-    }
-
+    private IList<CountryItem>? _countriesList = null;
+    private readonly Dictionary<string, IList<StateItem>> _statesDictionary = new();
+    private readonly Dictionary<string, IList<CityItem>> _citiesDictionary = new();
+    
     public IQAirService(IQAirApi iqAirClient)
     {
         _iqAirClient = iqAirClient;
-        _countriesList = null;
     }
     
-    public async Task<AirQualityResult> GetAirForCity(string city, string state, string country)
+    public async Task<AirQualityResult> GetAir(string city, string state, string country)
     {
         var cityData = await _iqAirClient.GetSpecifiedCityData(city, state, country);
 
@@ -39,17 +30,17 @@ public class IQAirService
         };
     }
 
-    public PaginatedList<CountryItem> GetCountriesPage(int page, int pageSize)
+    public async Task<IList<CountryItem>> GetCountries()
     {
-        var countries =  CountriesList?
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToList().AsReadOnly();
-
-        return new PaginatedList<CountryItem>(countries, CountriesList.Count, page, pageSize);
+        if (_countriesList is null)
+        {
+            _countriesList = await _iqAirClient.ListSupportedCountries();
+        }
+        
+        return _countriesList;
     }
     
-    public async Task<IList<StateItem>> GetStatesForCountry(string country)
+    private async Task<IList<StateItem>> GetStates(string country)
     {
         IList<StateItem> states;
         
@@ -68,7 +59,7 @@ public class IQAirService
 
     public async Task<PaginatedList<StateItem>> GetStatesPage(string country, int page, int pageSize)
     {
-        var states = await GetStatesForCountry(country);
+        var states = await GetStates(country);
         
         var statesPage = states?
             .Skip((page - 1) * pageSize)
@@ -90,7 +81,7 @@ public class IQAirService
         return new PaginatedList<CityItem>(citiesPage, cities.Count, page, pageSize);
     }
 
-    public async Task<IList<CityItem>?> GetCities(string country, string state)
+    private async Task<IList<CityItem>?> GetCities(string country, string state)
     {
         IList<CityItem> cities;
         var key = $"{country}|{state}";

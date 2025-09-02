@@ -8,10 +8,10 @@ namespace AirBro.TelegramBot.Handlers.Commands.ShowAir;
 
 public class ShowAirCommandHandler : IBotCommandHandler
 {
-    private readonly IQAirService _airService;
+    private readonly IAirQualityService _airService;
     private readonly UserDataService _usersData;
     
-    public ShowAirCommandHandler(IQAirService airService, UserDataService usersData)
+    public ShowAirCommandHandler(IAirQualityService airService, UserDataService usersData)
     {
         _airService = airService;
         _usersData = usersData;
@@ -38,7 +38,7 @@ public class ShowAirCommandHandler : IBotCommandHandler
         
         foreach (var location in locations)
         {
-            var result = await _airService.GetAirForCity(location.City, location.State, location.Country.Name);
+            var result = await _airService.GetAir(location.City, location.State, location.Country.Name);
 
             msgText.AppendLine($"{result.Location.ToString()}: {result.Aqi} ({result.Quality})");
             msgText.AppendLine($"Last update: {result.LastUpdate.ToShortTimeString()}");

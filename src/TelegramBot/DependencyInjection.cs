@@ -27,7 +27,7 @@ public static class DependencyInjection
 
         services.AddHostedService<BotService>();
         services.AddSingleton<AirBroBot>();
-        services.AddSingleton<IQAirService>();
+        services.AddSingleton<IAirQualityService, IQAirService>();
         services.AddSingleton<TempUserDataService>();
         services.AddScoped<UserDataService>();
         services.AddTransient<IQAirApi, IQAirApiClient.IQAirApiClient>();

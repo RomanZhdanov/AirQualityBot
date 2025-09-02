@@ -7,9 +7,9 @@ namespace AirBro.TelegramBot.Handlers.Queries;
 
 public class StatesPageQueryHandler : IBotQueryHandler
 {
-    private readonly IQAirService _airService;
+    private readonly IAirQualityService _airService;
 
-    public StatesPageQueryHandler(IQAirService airService)
+    public StatesPageQueryHandler(IAirQualityService airService)
     {
         _airService = airService;
     }
