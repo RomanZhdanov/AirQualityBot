@@ -28,6 +28,7 @@ public static class DependencyInjection
         services.AddHostedService<BotService>();
         services.AddSingleton<AirBroBot>();
         services.AddSingleton<IAirQualityService, IQAirService>();
+        services.Decorate<IAirQualityService, CachedAirQualityService>();
         services.AddSingleton<TempUserDataService>();
         services.AddScoped<UserDataService>();
         services.AddTransient<IQAirApi, IQAirApiClient.IQAirApiClient>();
@@ -35,6 +36,7 @@ public static class DependencyInjection
         services.AddTransient<CountriesService>();
         services.AddHttpClient();
         services.AddBotHandlers();
+        services.AddMemoryCache();
         
         return services;
     }
