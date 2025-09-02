@@ -27,31 +27,7 @@ public class MessageTextHandler
       switch (_tempUserDataService.State)
       {
          case UserStates.CountrySearch:
-            var result = await _dbContext.Countries
-               .Where(c => c.Name.ToLower().Contains(input.ToLower()))
-               .ToListAsync(cancellationToken);
-            if (result.Any())
-            {
-               var buttons = new List<InlineKeyboardButton>();
-
-               foreach (var country in result)
-               {
-                  buttons.Add(InlineKeyboardButton.WithCallbackData(country.Name, $"SetCountry|{country.Name}"));
-               }
-               var keyboard = new InlineKeyboardMarkup(buttons);
-               await botClient.SendMessage(
-                  chatId: chatId,
-                  text: $"This is what I've found for {input}, you can select country or send me another one",
-                  replyMarkup: keyboard,
-                  cancellationToken: cancellationToken);
-            }
-            else
-            {
-               await botClient.SendMessage(
-                  chatId: chatId,
-                  text: $"Can't find anything for {input}",
-                  cancellationToken: cancellationToken);  
-            }
+            await SearchCountry(botClient, cancellationToken, input, chatId);
             break;
          default:
             await botClient.SendMessage(
@@ -59,6 +35,36 @@ public class MessageTextHandler
                text: input,
                cancellationToken: cancellationToken);
             break;
+      }
+   }
+
+   private async Task SearchCountry(ITelegramBotClient botClient, CancellationToken cancellationToken, string? input,
+      long chatId)
+   {
+      var result = await _dbContext.Countries
+         .Where(c => c.Name.ToLower().Contains(input.ToLower()))
+         .ToListAsync(cancellationToken);
+      if (result.Any())
+      {
+         var buttons = new List<InlineKeyboardButton>();
+
+         foreach (var country in result)
+         {
+            buttons.Add(InlineKeyboardButton.WithCallbackData(country.Name, $"SetCountry|{country.Name}"));
+         }
+         var keyboard = new InlineKeyboardMarkup(buttons);
+         await botClient.SendMessage(
+            chatId: chatId,
+            text: $"This is what I've found for {input}, you can select country or send me another one",
+            replyMarkup: keyboard,
+            cancellationToken: cancellationToken);
+      }
+      else
+      {
+         await botClient.SendMessage(
+            chatId: chatId,
+            text: $"Can't find anything for {input}",
+            cancellationToken: cancellationToken);  
       }
    }
 }
