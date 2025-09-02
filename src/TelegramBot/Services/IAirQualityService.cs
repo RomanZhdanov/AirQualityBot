@@ -11,5 +11,5 @@ public interface IAirQualityService
 
     Task<PaginatedList<StateItem>> GetStatesPage(string country, int page, int pageSize);
 
-    Task<PaginatedList<CityItem>> GetCitiesPage(string country, string state, int page, int pageSize);
+    Task<PaginatedList<CityItem>?> GetCitiesPage(string country, string state, int page, int pageSize);
 }

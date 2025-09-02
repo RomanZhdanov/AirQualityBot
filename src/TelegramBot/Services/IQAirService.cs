@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using AirBro.TelegramBot.Models;
 using IQAirApiClient;
 using IQAirApiClient.Models;
@@ -10,8 +11,8 @@ public class IQAirService : IAirQualityService
     private readonly IQAirApi _iqAirClient;
 
     private IList<CountryItem>? _countriesList = null;
-    private readonly Dictionary<string, IList<StateItem>> _statesDictionary = new();
-    private readonly Dictionary<string, IList<CityItem>> _citiesDictionary = new();
+    private readonly ConcurrentDictionary<string, IList<StateItem>> _statesDictionary = new();
+    private readonly ConcurrentDictionary<string, IList<CityItem>> _citiesDictionary = new();
     
     public IQAirService(IQAirApi iqAirClient)
     {
@@ -51,7 +52,7 @@ public class IQAirService : IAirQualityService
         else
         {
             states = await _iqAirClient.ListSupportedStatesInCountry(country);
-            _statesDictionary.Add(country, states);
+            _statesDictionary.TryAdd(country, states);
         }
 
         return states;
@@ -69,9 +70,11 @@ public class IQAirService : IAirQualityService
         return new PaginatedList<StateItem>(statesPage, states.Count, page, pageSize);
     }
 
-    public async Task<PaginatedList<CityItem>> GetCitiesPage(string country, string state, int page, int pageSize)
+    public async Task<PaginatedList<CityItem>?> GetCitiesPage(string country, string state, int page, int pageSize)
     {
         var cities = await GetCities(country, state);
+
+        if (cities is null) return null;
 
         var citiesPage = cities?
             .Skip((page - 1) * pageSize)
@@ -95,7 +98,7 @@ public class IQAirService : IAirQualityService
             cities = await _iqAirClient.ListSupportedCitiesInState(country, state);
             if (cities is not null)
             {
-                _citiesDictionary.Add(key, cities);
+                _citiesDictionary.TryAdd(key, cities);
             }
         }
 

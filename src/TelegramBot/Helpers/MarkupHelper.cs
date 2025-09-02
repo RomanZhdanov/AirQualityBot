@@ -90,6 +90,12 @@ public static class MarkupHelper
         
         buttonRows.Add(navigationButtons);
         
+        var backButton = new List<InlineKeyboardButton>
+        {
+            InlineKeyboardButton.WithCallbackData("Back to states list", $"StatesPage|{country}|1")
+        };
+        buttonRows.Add(backButton);
+        
         return new InlineKeyboardMarkup(buttonRows);
     }
 }

@@ -1,18 +1,20 @@
+using AirBro.TelegramBot.Helpers;
 using AirBro.TelegramBot.Models;
 using AirBro.TelegramBot.Services;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.ReplyMarkups;
 
 namespace AirBro.TelegramBot.Handlers.Queries;
 
 public class SetCountryQueryHandler : IBotQueryHandler
 {
     private readonly TempUserDataService _tempUserDataService;
+    private readonly IAirQualityService _airService;
 
-    public SetCountryQueryHandler(TempUserDataService tempUserDataService)
+    public SetCountryQueryHandler(TempUserDataService tempUserDataService, IAirQualityService airService)
     {
         _tempUserDataService = tempUserDataService;
+        _airService = airService;
     }
 
     public async Task HandleAsync(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
@@ -27,19 +29,9 @@ public class SetCountryQueryHandler : IBotQueryHandler
         userLocation.Country = country;
         _tempUserDataService.State = UserStates.None;
 
-        var msg = $"Country {country} has been saved. Now you need to select state for that country";
-        
-        var buttons = new List<InlineKeyboardButton>();
-            
-        buttons.Add(InlineKeyboardButton.WithCallbackData("Select state from list", $"StatesPage|{country}|1"));
-            
-        var keyboard = new InlineKeyboardMarkup(buttons);
-        
-        await botClient.EditMessageText(
-            chatId: chatId,
-            messageId: messageId,
-            text: msg,
-            replyMarkup: keyboard,
-            cancellationToken: cancellationToken);
+        var statesPage = await _airService.GetStatesPage(country, 1, 10);
+        await MessagesHelper.SendStatesPageMessage(botClient, country, statesPage, chatId, messageId, cancellationToken);
     }
+
+   
 }

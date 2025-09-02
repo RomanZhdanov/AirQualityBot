@@ -22,13 +22,7 @@ public class StatesPageQueryHandler : IBotQueryHandler
         var country =  args[1];
         var page = Convert.ToInt32(args[2]);
         var statesPage = await _airService.GetStatesPage(country, page, 10);
-        var keyboard = MarkupHelper.GetStatesPage(country, statesPage);
-            
-        await botClient.EditMessageText(
-            chatId: chatId,
-            messageId: messageId,
-            text: $"Country {country} has been saved. Now select state for that country ({statesPage.TotalCount} available, page {statesPage.PageNumber}/{statesPage.TotalPages})",
-            replyMarkup: keyboard,
-            cancellationToken: cancellationToken);
+        
+        await MessagesHelper.SendStatesPageMessage(botClient, country, statesPage, chatId, messageId, cancellationToken);
     }
 }
