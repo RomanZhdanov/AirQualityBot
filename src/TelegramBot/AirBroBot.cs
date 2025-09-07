@@ -13,12 +13,9 @@ public sealed class AirBroBot
     private readonly ITelegramBotClient _bot;
     private readonly IBotHandlers _handlers;
 
-    public AirBroBot(ILogger<AirBroBot> logger, IConfiguration configuration, IBotHandlers handlers)
+    public AirBroBot(ILogger<AirBroBot> logger, ITelegramBotClient bot, IBotHandlers handlers)
     {
-        var key = configuration["TelegramBotKey"];
-        if (key is null) throw new ArgumentException("Bot key is not found!");
-        
-        _bot = new TelegramBotClient(key);
+        _bot = bot;
         _logger = logger;
         _handlers = handlers;
     }

@@ -1,15 +1,16 @@
 using AirBro.TelegramBot.Data;
 using AirBro.TelegramBot.Data.Models;
+using AirBro.TelegramBot.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace AirBro.TelegramBot.Services;
 
 public class LocationsInitializer
 {
-   private readonly IAirQualityService _airService;
+   private readonly IAirApiService _airService;
    private readonly ApplicationDbContext _dbContext;
 
-   public LocationsInitializer(IAirQualityService airService, ApplicationDbContext dbContext)
+   public LocationsInitializer(IAirApiService airService, ApplicationDbContext dbContext)
    {
       _airService = airService;
       _dbContext = dbContext;

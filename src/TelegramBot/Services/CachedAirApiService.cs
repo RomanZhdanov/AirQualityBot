@@ -1,28 +1,29 @@
+using AirBro.TelegramBot.Interfaces;
 using AirBro.TelegramBot.Models;
 using IQAirApiClient.Models;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace AirBro.TelegramBot.Services;
 
-public class CachedAirQualityService : IAirQualityService
+public class CachedAirApiService : IAirApiService
 {
     private readonly IMemoryCache _cache;
-    private readonly IAirQualityService _airQualityService;
+    private readonly IAirApiService _airApiService;
 
-    public CachedAirQualityService(IMemoryCache cache, IAirQualityService airQualityService)
+    public CachedAirApiService(IMemoryCache cache, IAirApiService airApiService)
     {
         _cache = cache;
-        _airQualityService = airQualityService;
+        _airApiService = airApiService;
     }
 
-    public async Task<AirQualityResult> GetAir(string city, string state, string country)
+    public async Task<AirQualityResult?> GetAir(string country, string state, string city)
     {
         var key = $"{city}_{state}_{country}";
         var result = _cache.Get<AirQualityResult>(key);
 
         if (result is null)
         {
-            result = await _airQualityService.GetAir(city, state, country);
+            result = await _airApiService.GetAir(country, state, city);
             _cache.Set(key, result, TimeSpan.FromHours(1));
         }
         
@@ -31,16 +32,16 @@ public class CachedAirQualityService : IAirQualityService
 
     public async Task<IList<CountryItem>> GetCountries()
     {
-        return await _airQualityService.GetCountries();
+        return await _airApiService.GetCountries();
     }
 
     public async Task<PaginatedList<StateItem>> GetStatesPage(string country, int page, int pageSize)
     {
-        return await _airQualityService.GetStatesPage(country, page, pageSize);
+        return await _airApiService.GetStatesPage(country, page, pageSize);
     }
 
     public async Task<PaginatedList<CityItem>> GetCitiesPage(string country, string state, int page, int pageSize)
     {
-        return await _airQualityService.GetCitiesPage(country, state, page, pageSize);
+        return await _airApiService.GetCitiesPage(country, state, page, pageSize);
     }
 }

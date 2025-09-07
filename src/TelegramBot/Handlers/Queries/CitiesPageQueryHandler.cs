@@ -1,5 +1,5 @@
 using AirBro.TelegramBot.Helpers;
-using AirBro.TelegramBot.Services;
+using AirBro.TelegramBot.Interfaces;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
@@ -7,9 +7,9 @@ namespace AirBro.TelegramBot.Handlers.Queries;
 
 public class CitiesPageQueryHandler : IBotQueryHandler
 {
-    private readonly IAirQualityService _airService;
+    private readonly IAirApiService _airService;
 
-    public CitiesPageQueryHandler(IAirQualityService airService)
+    public CitiesPageQueryHandler(IAirApiService airService)
     {
         _airService = airService;
     }

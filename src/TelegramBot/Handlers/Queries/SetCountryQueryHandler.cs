@@ -1,4 +1,5 @@
 using AirBro.TelegramBot.Helpers;
+using AirBro.TelegramBot.Interfaces;
 using AirBro.TelegramBot.Models;
 using AirBro.TelegramBot.Services;
 using Telegram.Bot;
@@ -9,9 +10,9 @@ namespace AirBro.TelegramBot.Handlers.Queries;
 public class SetCountryQueryHandler : IBotQueryHandler
 {
     private readonly TempUserDataService _tempUserDataService;
-    private readonly IAirQualityService _airService;
+    private readonly IAirApiService _airService;
 
-    public SetCountryQueryHandler(TempUserDataService tempUserDataService, IAirQualityService airService)
+    public SetCountryQueryHandler(TempUserDataService tempUserDataService, IAirApiService airService)
     {
         _tempUserDataService = tempUserDataService;
         _airService = airService;

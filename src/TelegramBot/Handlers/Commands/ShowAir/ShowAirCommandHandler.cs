@@ -1,5 +1,4 @@
-using System.Text;
-using AirBro.TelegramBot.Handlers;
+using AirBro.TelegramBot.Models.Mappers;
 using AirBro.TelegramBot.Services;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -8,12 +7,12 @@ namespace AirBro.TelegramBot.Handlers.Commands.ShowAir;
 
 public class ShowAirCommandHandler : IBotCommandHandler
 {
-    private readonly IAirQualityService _airService;
+    private readonly ApiRequestsManagerService _apiService;
     private readonly UserDataService _usersData;
     
-    public ShowAirCommandHandler(IAirQualityService airService, UserDataService usersData)
+    public ShowAirCommandHandler(ApiRequestsManagerService apiService, UserDataService usersData)
     {
-        _airService = airService;
+        _apiService = apiService;
         _usersData = usersData;
     }
     public async Task HandleAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
@@ -32,22 +31,12 @@ public class ShowAirCommandHandler : IBotCommandHandler
             return;
         }
         
-        var msgText = new StringBuilder();
-        msgText.AppendLine($"Air quality in your locations (AQI US):");
-        msgText.AppendLine();
-        
-        foreach (var location in locations)
-        {
-            var result = await _airService.GetAir(location.City, location.State, location.Country.Name);
-
-            msgText.AppendLine($"{result.Location.ToString()}: {result.Aqi} ({result.Quality})");
-            msgText.AppendLine($"Last update: {result.LastUpdate.ToShortTimeString()}");
-            msgText.AppendLine();
-        }
-        
-        await botClient.SendMessage(
+        var msg = await botClient.SendMessage(
             chatId: chatId,
-            text: msgText.ToString(),
+            text: "Fetching data please wait...",
             cancellationToken: cancellationToken);
+
+        var loc = locations.Select(l => l.ToLocation());
+        await _apiService.DispatchGetAirRequestAsync(chatId, msg.Id, loc);
     }
 }
