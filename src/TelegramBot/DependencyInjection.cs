@@ -26,6 +26,7 @@ public static class DependencyInjection
         }
 
         services.AddHostedService<BotService>();
+        services.AddHostedService<QueueMonitorService>();
         services.AddSingleton<AirBroBot>();
         services.AddSingleton<IAirQualityService, IQAirService>();
         services.Decorate<IAirQualityService, CachedAirQualityService>();

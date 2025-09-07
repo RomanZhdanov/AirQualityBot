@@ -1,5 +1,6 @@
 using AirBro.TelegramBot.Handlers;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types.Enums;
@@ -8,15 +9,17 @@ namespace AirBro.TelegramBot;
 
 public sealed class AirBroBot
 {
+    private readonly ILogger<AirBroBot> _logger;
     private readonly ITelegramBotClient _bot;
     private readonly IBotHandlers _handlers;
 
-    public AirBroBot(IConfiguration configuration, IBotHandlers handlers)
+    public AirBroBot(ILogger<AirBroBot> logger, IConfiguration configuration, IBotHandlers handlers)
     {
         var key = configuration["TelegramBotKey"];
         if (key is null) throw new ArgumentException("Bot key is not found!");
         
         _bot = new TelegramBotClient(key);
+        _logger = logger;
         _handlers = handlers;
     }
     
@@ -33,7 +36,6 @@ public sealed class AirBroBot
         
         var me = await _bot.GetMe(cancellationToken: cancellationToken);
 
-        Console.WriteLine($"Start listening for @{me.Username}");
-        Console.ReadLine();
+        _logger.LogInformation($"Start listening for @{me.Username}");
     }
 }
