@@ -2,7 +2,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace AirBro.TelegramBot;
 
-public class BotService : IHostedService
+public class BotService : BackgroundService 
 {
     private readonly AirBroBot _bot;
     
@@ -11,13 +11,8 @@ public class BotService : IHostedService
         _bot = bot;
     }
 
-    public async Task StartAsync(CancellationToken cancellationToken)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        await _bot.StartReceivingAsync(cancellationToken);
-    }
-
-    public Task StopAsync(CancellationToken cancellationToken)
-    {
-        return Task.CompletedTask;
+        await _bot.StartReceivingAsync(stoppingToken);
     }
 }

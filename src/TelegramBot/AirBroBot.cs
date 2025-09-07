@@ -25,7 +25,7 @@ public sealed class AirBroBot
     
     public async Task StartReceivingAsync(CancellationToken cancellationToken)
     {
-        _bot.StartReceiving(
+        await _bot.ReceiveAsync(
             updateHandler: _handlers.HandleUpdateAsync,
             errorHandler: _handlers.HandleErrorAsync,
             receiverOptions: new ReceiverOptions()
