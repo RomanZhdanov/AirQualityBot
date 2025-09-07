@@ -130,6 +130,7 @@ public class AirVisualApiService : IAirApiService
     {
         const int maxRetries = 3;
         int retries = 0;
+        int seconds = 30;
 
         while (retries < maxRetries)
         {
@@ -138,7 +139,8 @@ public class AirVisualApiService : IAirApiService
             if (result.StatusCode == HttpStatusCode.TooManyRequests)
             {
                 retries++;
-                await Task.Delay(TimeSpan.FromSeconds(15));
+                await Task.Delay(TimeSpan.FromSeconds(seconds));
+                seconds *= 2;
                 continue;
             }
 
