@@ -20,6 +20,7 @@ public class QueueMonitorService : BackgroundService
         _logger = logger;
         _queue = queue;
         _apiService = apiService;
+        _apiService.ApiLimitReached += OnApiLimitReached;
         _botClient = botClient;
     }
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -67,5 +68,10 @@ public class QueueMonitorService : BackgroundService
                 
             }
         }
+    }
+
+    private void OnApiLimitReached(object? sender, EventArgs e)
+    {
+        _logger.LogWarning("Hello from api limit reached event handler!.");
     }
 }

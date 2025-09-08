@@ -15,6 +15,12 @@ public class CachedAirApiService : IAirApiService
         _cache = cache;
         _airApiService = airApiService;
     }
+    
+    public event EventHandler ApiLimitReached
+    {
+        add => _airApiService.ApiLimitReached += value;
+        remove => _airApiService.ApiLimitReached -= value;
+    }
 
     public async Task<AirQualityResult?> GetAir(string country, string state, string city)
     {

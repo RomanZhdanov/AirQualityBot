@@ -5,6 +5,9 @@ namespace AirBro.TelegramBot.Interfaces;
 
 public interface IAirApiService
 {
+    event EventHandler ApiLimitReached;
+    
+    
     Task<AirQualityResult?> GetAir(string country, string state, string city);
 
     Task<IList<CountryItem>> GetCountries();

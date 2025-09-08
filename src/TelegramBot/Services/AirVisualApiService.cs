@@ -16,6 +16,8 @@ public class AirVisualApiService : IAirApiService
     private readonly ConcurrentDictionary<string, IList<StateItem>> _statesDictionary = new();
     private readonly ConcurrentDictionary<string, IList<CityItem>> _citiesDictionary = new();
     
+    public event EventHandler ApiLimitReached;
+    
     public AirVisualApiService(IAirVisualApi airVisualClient)
     {
         _airVisualClient = airVisualClient;
@@ -130,7 +132,7 @@ public class AirVisualApiService : IAirApiService
     {
         const int maxRetries = 3;
         int retries = 0;
-        int seconds = 30;
+        int seconds = 60;
 
         while (retries < maxRetries)
         {
@@ -138,6 +140,7 @@ public class AirVisualApiService : IAirApiService
 
             if (result.StatusCode == HttpStatusCode.TooManyRequests)
             {
+                ApiLimitReached?.Invoke(this, EventArgs.Empty);
                 retries++;
                 await Task.Delay(TimeSpan.FromSeconds(seconds));
                 seconds *= 2;
