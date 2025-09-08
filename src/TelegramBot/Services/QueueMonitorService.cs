@@ -14,6 +14,8 @@ public class QueueMonitorService : BackgroundService
     private readonly ChannelReader<QueuedRequest> _queue;
     private readonly IAirApiService _apiService;
     private readonly ITelegramBotClient _botClient;
+    private long _currentChatId = 0;
+    private int _currentMessageId = 0;
 
     public QueueMonitorService(ILogger<QueueMonitorService> logger, ChannelReader<QueuedRequest> queue, IAirApiService apiService, ITelegramBotClient botClient)
     {
@@ -33,6 +35,8 @@ public class QueueMonitorService : BackgroundService
             {
                 try
                 {
+                    _currentChatId = request.ChatId;
+                    _currentMessageId = request.MessageId;
                     var msgText = new StringBuilder();
                     msgText.AppendLine($"Air quality in your locations (AQI US):");
                     msgText.AppendLine();
@@ -70,8 +74,12 @@ public class QueueMonitorService : BackgroundService
         }
     }
 
-    private void OnApiLimitReached(object? sender, EventArgs e)
+    private async void OnApiLimitReached(object? sender, EventArgs e)
     {
         _logger.LogWarning("Hello from api limit reached event handler!.");
+        await _botClient.EditMessageText(
+            chatId: _currentChatId,
+            messageId: _currentMessageId,
+            text: "Your request is taking a little longer to complete because we've reached the AirVisual API limit of requests per minute. We need to wait a bit, so please be patient 🙏"); 
     }
 }
