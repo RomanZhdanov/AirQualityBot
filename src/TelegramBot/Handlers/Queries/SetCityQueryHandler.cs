@@ -6,6 +6,7 @@ namespace AirBro.TelegramBot.Handlers.Queries;
 
 public class SetCityQueryHandler : IBotQueryHandler
 {
+    private const int LocationsLimit = 5;
     private readonly TempUserDataService  _tempDataService;
     private readonly UserDataService _usersDataService;
 
@@ -22,6 +23,18 @@ public class SetCityQueryHandler : IBotQueryHandler
         var args = callbackQuery.Data!.Split('|');
         var city = args[1];
 
+        var locationsCount = await _usersDataService.GetUserLocationsCountAsync(chatId);
+
+        if (locationsCount >= LocationsLimit)
+        {
+            await botClient.EditMessageText(
+                chatId: chatId,
+                messageId: messageId,
+                text: "You already reached max locations.",
+                cancellationToken: cancellationToken);
+            
+            return;
+        }
         var userLocation = _tempDataService.GetUserLocation(chatId);
         userLocation.City = city;
 

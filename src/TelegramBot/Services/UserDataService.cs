@@ -14,6 +14,13 @@ public class UserDataService
         _context = context;
     }
 
+    public async Task<int> GetUserLocationsCountAsync(long chatId)
+    {
+        return await _context.Users.Where(u => u.Id == chatId)
+            .Select(u => u.Locations.Count)
+            .FirstOrDefaultAsync();    
+    }
+
     public async Task<IReadOnlyCollection<Data.Models.Location>> GetUserLocationsAsync(long chatId)
     {
         var user = await _context.Users
