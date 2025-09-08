@@ -16,6 +16,7 @@ public class QueueMonitorService : BackgroundService
     private readonly ITelegramBotClient _botClient;
     private long _currentChatId = 0;
     private int _currentMessageId = 0;
+    private bool _needNotification = false;
 
     public QueueMonitorService(ILogger<QueueMonitorService> logger, ChannelReader<QueuedRequest> queue, IAirApiService apiService, ITelegramBotClient botClient)
     {
@@ -37,6 +38,7 @@ public class QueueMonitorService : BackgroundService
                 {
                     _currentChatId = request.ChatId;
                     _currentMessageId = request.MessageId;
+                    _needNotification = false;
                     var msgText = new StringBuilder();
                     msgText.AppendLine($"Air quality in your locations (AQI US):");
                     msgText.AppendLine();
@@ -58,12 +60,28 @@ public class QueueMonitorService : BackgroundService
                             msgText.AppendLine();
                         }
                     }
-                
-                    await _botClient.EditMessageText(
-                        chatId: request.ChatId,
-                        messageId: request.MessageId,
-                        text: msgText.ToString(),
-                        cancellationToken: stoppingToken);
+
+                    if (_needNotification)
+                    {
+                        await _botClient.DeleteMessage(
+                            chatId: _currentChatId,
+                            messageId: _currentMessageId,
+                            cancellationToken: stoppingToken);
+
+                        await _botClient.SendMessage(
+                            chatId: _currentChatId,
+                            text: msgText.ToString(),
+                            cancellationToken: stoppingToken
+                        );
+                    }
+                    else
+                    {
+                        await _botClient.EditMessageText(
+                            chatId: _currentChatId,
+                            messageId: _currentMessageId,
+                            text: msgText.ToString(),
+                            cancellationToken: stoppingToken);
+                    }
                 }
                 catch (Exception e)
                 {
@@ -77,6 +95,7 @@ public class QueueMonitorService : BackgroundService
     private async void OnApiLimitReached(object? sender, EventArgs e)
     {
         _logger.LogWarning("Hello from api limit reached event handler!.");
+        _needNotification = true;
         await _botClient.EditMessageText(
             chatId: _currentChatId,
             messageId: _currentMessageId,
