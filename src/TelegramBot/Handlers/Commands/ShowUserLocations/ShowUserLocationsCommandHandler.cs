@@ -40,7 +40,7 @@ public class ShowUserLocationsCommandHandler : IBotCommandHandler
         {
             var buttonRow = new List<InlineKeyboardButton>
             {
-                InlineKeyboardButton.WithCallbackData(location.ToString(), $"client_actions|{location.Id}")
+                InlineKeyboardButton.WithCallbackData(location.ToString(), $"GetLocationActions|{location.Id}")
             };
             
             buttonRows.Add(buttonRow);

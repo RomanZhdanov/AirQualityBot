@@ -35,6 +35,7 @@ public class UpdateHandlers : IUpdateHandlers
             { "StatesPage", typeof(StatesPageQueryHandler)},
             { "CitiesPage", typeof(CitiesPageQueryHandler) },
             { "SearchCountry", typeof(SearchCountryQueryHandler) },
+            { "GetLocationActions", typeof(GetLocationActionsQueryHandler) },
         };
     }
     
