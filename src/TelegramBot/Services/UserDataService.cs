@@ -1,5 +1,7 @@
 using AirBro.TelegramBot.Data;
 using AirBro.TelegramBot.Data.Models;
+using AirBro.TelegramBot.Exceptions;
+using AirBro.TelegramBot.Models.Mappers;
 using Microsoft.EntityFrameworkCore;
 using Location = AirBro.TelegramBot.Models.Location;
 
@@ -72,5 +74,31 @@ public class UserDataService
         
         user.Locations.Add(loc);
         await _context.SaveChangesAsync();
+    }
+
+    public async Task<Location> RemoveUserLocationAsync(long chatId, int locationId)
+    {
+        var user = await _context.Users
+            .AsTracking()
+            .Include(u => u.Locations)
+            .ThenInclude(l => l.Country)
+            .SingleOrDefaultAsync(u => u.Id == chatId);
+
+        if (user is null)
+        {
+            throw new Exception("User not found");
+        }
+        
+        var location = user.Locations.SingleOrDefault(l => l.Id == locationId);
+
+        if (location is null)
+        {
+            throw new LocationNotFoundException();
+        }
+        
+        user.Locations.Remove(location);
+        await _context.SaveChangesAsync();
+        
+        return location.ToLocation();
     }
 }
