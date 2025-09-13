@@ -1,4 +1,5 @@
 using AirBro.TelegramBot.Services;
+using Microsoft.Extensions.Configuration;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
@@ -6,12 +7,13 @@ namespace AirBro.TelegramBot.Handlers.Queries;
 
 public class SetCityQueryHandler : IBotQueryHandler
 {
-    private const int LocationsLimit = 5;
+    private readonly int _locationsLimit;
     private readonly TempUserDataService  _tempDataService;
     private readonly UserDataService _usersDataService;
 
-    public SetCityQueryHandler(TempUserDataService tempDataService, UserDataService usersDataService)
+    public SetCityQueryHandler(IConfiguration config, TempUserDataService tempDataService, UserDataService usersDataService)
     {
+        _locationsLimit = config.GetValue<int>("LocationsLimit");
         _tempDataService = tempDataService;
         _usersDataService = usersDataService;
     }
@@ -25,7 +27,7 @@ public class SetCityQueryHandler : IBotQueryHandler
 
         var locationsCount = await _usersDataService.GetUserLocationsCountAsync(chatId);
 
-        if (locationsCount >= LocationsLimit)
+        if (locationsCount >= _locationsLimit)
         {
             await botClient.EditMessageText(
                 chatId: chatId,

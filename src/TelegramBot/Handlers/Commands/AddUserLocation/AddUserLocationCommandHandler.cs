@@ -1,4 +1,5 @@
 using AirBro.TelegramBot.Services;
+using Microsoft.Extensions.Configuration;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -7,10 +8,11 @@ namespace AirBro.TelegramBot.Handlers.Commands.AddUserLocation;
 
 public class AddUserLocationCommandHandler : IBotCommandHandler
 {
-    private const int LocationsLimit = 5;
+    private readonly int _locationsLimit;
     private readonly UserDataService _userDataService;
-    public AddUserLocationCommandHandler(UserDataService userDataService)
+    public AddUserLocationCommandHandler(IConfiguration config, UserDataService userDataService)
     {
+        _locationsLimit = config.GetValue<int>("LocationsLimit");
         _userDataService = userDataService;
     }
 
@@ -20,17 +22,17 @@ public class AddUserLocationCommandHandler : IBotCommandHandler
 
         var locationsCount = await _userDataService.GetUserLocationsCountAsync(chatId);
 
-        if (locationsCount >= LocationsLimit)
+        if (locationsCount >= _locationsLimit)
         {
             await botClient.SendMessage(
                 chatId: chatId,
-                text: "You already have maximum locations.",
+                text: $"You already have maximum of {_locationsLimit} locations.",
                 cancellationToken: cancellationToken);
 
             return;
         }
         
-        var msg = $"Lets start from choosing a country.";
+        var msg = $"You can add up to {_locationsLimit} locations. Choose how you would like to add.";
         var buttons = new List<InlineKeyboardButton>();
             
         buttons.Add(InlineKeyboardButton.WithCallbackData("Search", "SearchCountry"));

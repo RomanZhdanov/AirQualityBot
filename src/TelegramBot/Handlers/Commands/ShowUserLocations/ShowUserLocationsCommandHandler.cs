@@ -1,4 +1,5 @@
 using AirBro.TelegramBot.Services;
+using Microsoft.Extensions.Configuration;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -8,9 +9,11 @@ namespace AirBro.TelegramBot.Handlers.Commands.ShowUserLocations;
 public class ShowUserLocationsCommandHandler : IBotCommandHandler
 {
     private readonly UserDataService _userData;
+    private readonly int _locationsLimit;
 
-    public ShowUserLocationsCommandHandler(UserDataService userData)
+    public ShowUserLocationsCommandHandler(IConfiguration config, UserDataService userData)
     {
+        _locationsLimit = config.GetValue<int>("LocationsLimit");
         _userData = userData;
     }
 
@@ -24,7 +27,7 @@ public class ShowUserLocationsCommandHandler : IBotCommandHandler
         {
             await botClient.SendMessage(
                 chatId: chatId,
-                text: "You haven't set any location yet! Use the /set_location command.",
+                text: $"You haven't saved any locations yet! Use the /set_location command, you can add up to {_locationsLimit} locations.",
                 cancellationToken: cancellationToken);
 
             return;
@@ -47,7 +50,7 @@ public class ShowUserLocationsCommandHandler : IBotCommandHandler
             
         await botClient.SendMessage(
             chatId: chatId,
-            text: "Your locations:",
+            text: $"Your locations ({locations.Count}/{_locationsLimit}):",
             replyMarkup: keyboard,
             cancellationToken: cancellationToken);
     }

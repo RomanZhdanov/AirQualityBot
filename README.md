@@ -1,7 +1,7 @@
 TODO
 * Set location with GPS
 * Add text formatting
-* Add limit for a number of saved locations per user
+* ~~Add limit for a number of saved locations per user~~
 * ~~Add a nice workaround for "too many requests"~~
 * Add find_location command
 * Add locations editing options
