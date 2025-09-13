@@ -12,7 +12,7 @@ public class ApiRequestsManagerService
         _queue = queue;
     }
 
-    public async Task DispatchGetAirRequestAsync(long chatId, int messageId, IEnumerable<Location> locations)
+    public async Task DispatchGetAirRequestAsync(long chatId, int messageId, IEnumerable<LocationDto> locations)
     {
         var apiRequests = new List<ApiRequest>(); 
         

@@ -1,9 +1,9 @@
 using AirBro.TelegramBot.Data;
 using AirBro.TelegramBot.Data.Models;
 using AirBro.TelegramBot.Exceptions;
+using AirBro.TelegramBot.Models;
 using AirBro.TelegramBot.Models.Mappers;
 using Microsoft.EntityFrameworkCore;
-using Location = AirBro.TelegramBot.Models.Location;
 
 namespace AirBro.TelegramBot.Services;
 
@@ -38,7 +38,7 @@ public class UserDataService
         return user.Locations.OrderBy(l => l.City).ToList();
     }
 
-    public async Task AddUserLocationAsync(long chatid, Location location)
+    public async Task AddUserLocationAsync(long chatid, LocationDto locationDto)
     {
         var user = await _context.Users.FindAsync(chatid);
 
@@ -48,7 +48,7 @@ public class UserDataService
             _context.Users.Add(user);
         }
         
-        var country = await _context.Countries.SingleOrDefaultAsync(c => c.Name == location.Country);
+        var country = await _context.Countries.SingleOrDefaultAsync(c => c.Name == locationDto.Country);
 
         if (country is null)
         {
@@ -58,16 +58,16 @@ public class UserDataService
         var loc = await _context.Locations
             .SingleOrDefaultAsync(l =>
                 l.CountryId == country.Id && 
-                l.State == location.State && 
-                l.City == location.City);
+                l.State == locationDto.State && 
+                l.City == locationDto.City);
 
         if (loc is null)
         {
             loc = new Data.Models.Location
             {
                 CountryId = country.Id,
-                State = location.State,
-                City = location.City
+                State = locationDto.State,
+                City = locationDto.City
             };
             _context.Locations.Add(loc);
         }
@@ -76,7 +76,7 @@ public class UserDataService
         await _context.SaveChangesAsync();
     }
 
-    public async Task<Location> RemoveUserLocationAsync(long chatId, int locationId)
+    public async Task<LocationDto> RemoveUserLocationAsync(long chatId, int locationId)
     {
         var user = await _context.Users
             .AsTracking()
@@ -99,6 +99,6 @@ public class UserDataService
         user.Locations.Remove(location);
         await _context.SaveChangesAsync();
         
-        return location.ToLocation();
+        return location.ToLocationDto();
     }
 }

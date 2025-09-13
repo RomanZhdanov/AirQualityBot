@@ -37,6 +37,7 @@ public class UpdateHandlers : IUpdateHandlers
             { "SearchCountry", typeof(SearchCountryQueryHandler) },
             { "GetLocationActions", typeof(GetLocationActionsQueryHandler) },
             { "RemoveLocation", typeof(RemoveLocationQueryHandler) },
+            { "GetLocationAir", typeof(GetLocationAirQueryHandler) },
         };
     }
     

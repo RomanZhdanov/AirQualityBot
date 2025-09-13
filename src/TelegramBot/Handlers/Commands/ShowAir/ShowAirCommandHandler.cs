@@ -36,7 +36,7 @@ public class ShowAirCommandHandler : IBotCommandHandler
             text: "Fetching data please wait...",
             cancellationToken: cancellationToken);
 
-        var loc = locations.Select(l => l.ToLocation());
+        var loc = locations.Select(l => l.ToLocationDto());
         await _apiService.DispatchGetAirRequestAsync(chatId, msg.Id, loc);
     }
 }

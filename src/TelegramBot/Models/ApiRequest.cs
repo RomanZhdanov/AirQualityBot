@@ -1,3 +1,3 @@
 namespace AirBro.TelegramBot.Models;
 
-public record ApiRequest(ApiEndpoint Endpoint, Location Location);
+public record ApiRequest(ApiEndpoint Endpoint, LocationDto LocationDto);

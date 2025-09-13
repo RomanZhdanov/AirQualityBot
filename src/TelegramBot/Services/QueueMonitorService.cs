@@ -45,7 +45,7 @@ public class QueueMonitorService : BackgroundService
                 
                     foreach (var apiRequest in request.ApiRequests)
                     {
-                        var location = apiRequest.Location;
+                        var location = apiRequest.LocationDto;
                         
                         var result = await _apiService.GetAir(location.Country, location.State, location.City);
 
@@ -55,7 +55,7 @@ public class QueueMonitorService : BackgroundService
                         }
                         else
                         {
-                            msgText.AppendLine($"{result.Location.ToString()}: {result.Aqi} ({result.Quality})");
+                            msgText.AppendLine($"{result.LocationDto.ToString()}: {result.Aqi} ({result.Quality})");
                             msgText.AppendLine($"Last update: {result.LastUpdate.ToShortTimeString()}");
                             msgText.AppendLine();
                         }

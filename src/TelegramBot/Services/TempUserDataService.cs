@@ -4,13 +4,13 @@ namespace AirBro.TelegramBot.Services;
 
 public class TempUserDataService
 {
-    private readonly Dictionary<long, Location> _usersLocations = new();
+    private readonly Dictionary<long, LocationDto> _usersLocations = new();
 
     public UserStates State { get; set; }
 
-    public Location GetUserLocation(long chatId)
+    public LocationDto GetUserLocation(long chatId)
     {
-        var userLocation = new Location();
+        var userLocation = new LocationDto();
         if (!_usersLocations.TryAdd(chatId, userLocation))
         {
             userLocation = _usersLocations[chatId];

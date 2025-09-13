@@ -4,7 +4,6 @@ using AirBro.TelegramBot.Interfaces;
 using AirBro.TelegramBot.Models;
 using IQAirApiClient;
 using IQAirApiClient.Models;
-using Location = AirBro.TelegramBot.Models.Location;
 
 namespace AirBro.TelegramBot.Services;
 
@@ -32,7 +31,7 @@ public class AirVisualApiService : IAirApiService
         
         return new AirQualityResult()
         {
-            Location = new Location(cityData.City, cityData.State, cityData.Country),
+            LocationDto = new LocationDto(cityData.City, cityData.State, cityData.Country),
             Aqi = cityData.Current.Pollution.Aqius,
             LastUpdate = cityData.Current.Pollution.Ts
         };

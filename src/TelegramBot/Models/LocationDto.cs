@@ -1,6 +1,6 @@
 namespace AirBro.TelegramBot.Models;
 
-public class Location
+public class LocationDto
 {
     public string? City { get; set; }
 
@@ -8,14 +8,14 @@ public class Location
 
     public string? Country { get; set; }
 
-    public Location()
+    public LocationDto()
     {
         City = null;
         State = null;
         Country = null;
     }
 
-    public Location(string city, string state, string country)
+    public LocationDto(string city, string state, string country)
     {
         City = city;
         State = state;

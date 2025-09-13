@@ -2,7 +2,7 @@ namespace AirBro.TelegramBot.Models;
 
 public class AirQualityResult
 {
-    public Location Location { get; set; }
+    public LocationDto LocationDto { get; set; }
 
     public int Aqi { get; set; }
 
