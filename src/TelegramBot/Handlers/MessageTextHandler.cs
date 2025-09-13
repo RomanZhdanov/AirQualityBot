@@ -29,6 +29,12 @@ public class MessageTextHandler
          case UserStates.CountrySearch:
             await SearchCountry(botClient, cancellationToken, input, chatId);
             break;
+         case UserStates.GpsSearch:
+               await botClient.SendMessage(
+                  chatId: chatId,
+                  text: "Send me a location attachment",
+                  cancellationToken: cancellationToken);
+            break;
          default:
             await botClient.SendMessage(
                chatId: chatId,
@@ -67,4 +73,6 @@ public class MessageTextHandler
             cancellationToken: cancellationToken);  
       }
    }
+   
+   
 }

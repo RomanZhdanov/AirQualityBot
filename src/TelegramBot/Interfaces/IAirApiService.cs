@@ -9,6 +9,8 @@ public interface IAirApiService
     
     
     Task<AirQualityResult?> GetAir(string country, string state, string city);
+    
+    Task<AirQualityResult?> GetNearestCityAir(double latitude, double longitude);
 
     Task<IList<CountryItem>> GetCountries();
 

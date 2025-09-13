@@ -8,11 +8,17 @@ public class LocationDto
 
     public string? Country { get; set; }
 
+    public double? Longitude { get; set; }
+    
+    public double? Latitude { get; set; }
+
     public LocationDto()
     {
         City = null;
         State = null;
         Country = null;
+        Longitude = null;
+        Latitude = null;
     }
 
     public LocationDto(string city, string state, string country)
@@ -20,6 +26,17 @@ public class LocationDto
         City = city;
         State = state;
         Country = country;
+        Longitude = null;
+        Latitude = null;
+    }
+
+    public LocationDto(double longitude, double latitude)
+    {
+        Longitude = longitude;
+        Latitude = latitude;
+        City = null;
+        State = null;
+        Country = null;
     }
 
     public override string ToString()

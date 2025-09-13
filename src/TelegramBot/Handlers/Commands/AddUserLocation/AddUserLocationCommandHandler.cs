@@ -37,6 +37,7 @@ public class AddUserLocationCommandHandler : IBotCommandHandler
             
         buttons.Add(InlineKeyboardButton.WithCallbackData("Search", "SearchCountry"));
         buttons.Add(InlineKeyboardButton.WithCallbackData("Select from list", "CountriesPage|1"));
+        buttons.Add(InlineKeyboardButton.WithCallbackData("Send GPS location", "SendGpsLocation"));
             
         var keyboard = new InlineKeyboardMarkup(buttons);
 

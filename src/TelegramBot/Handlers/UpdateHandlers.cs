@@ -1,4 +1,5 @@
 using AirBro.TelegramBot.Handlers.Commands.AddUserLocation;
+using AirBro.TelegramBot.Handlers.Commands.FindNearestCity;
 using AirBro.TelegramBot.Handlers.Commands.ShowAir;
 using AirBro.TelegramBot.Handlers.Commands.ShowUserLocations;
 using AirBro.TelegramBot.Handlers.Commands.Welcome;
@@ -38,6 +39,7 @@ public class UpdateHandlers : IUpdateHandlers
             { "GetLocationActions", typeof(GetLocationActionsQueryHandler) },
             { "RemoveLocation", typeof(RemoveLocationQueryHandler) },
             { "GetLocationAir", typeof(GetLocationAirQueryHandler) },
+            { "SendGpsLocation", typeof(SendGpsLocationQueryHandler) }
         };
     }
     
@@ -80,6 +82,12 @@ public class UpdateHandlers : IUpdateHandlers
                 var handler = scope.ServiceProvider.GetRequiredService<MessageTextHandler>();
                 await handler.HandleAsync(botClient, message, cancellationToken);
             }
+        }
+        else if (message.Location != null)
+        {
+            using var scope = _serviceProvider.CreateScope();
+            var handler = scope.ServiceProvider.GetRequiredService<FindNearestCityCommandHandler>();
+            await  handler.HandleAsync(botClient, message, cancellationToken);
         }
     }
 

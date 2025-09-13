@@ -52,6 +52,6 @@ public class GetLocationAirQueryHandler : IBotQueryHandler
             location.ToLocationDto()
         };
 
-        await _apiRequestsManager.DispatchGetAirRequestAsync(chatId, messageid, payload);
+        await _apiRequestsManager.DispatchGetAirRequestAsync(ApiEndpoint.City, chatId, messageid, payload);
     }
 }

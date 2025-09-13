@@ -4,4 +4,5 @@ public enum UserStates
 {
     None,
     CountrySearch,   
+    GpsSearch
 }

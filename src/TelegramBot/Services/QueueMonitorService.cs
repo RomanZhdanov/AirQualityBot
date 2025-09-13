@@ -46,8 +46,17 @@ public class QueueMonitorService : BackgroundService
                     foreach (var apiRequest in request.ApiRequests)
                     {
                         var location = apiRequest.LocationDto;
-                        
-                        var result = await _apiService.GetAir(location.Country, location.State, location.City);
+                        AirQualityResult? result = null;
+
+                        switch (apiRequest.Endpoint)
+                        {
+                            case ApiEndpoint.City:
+                                result = await _apiService.GetAir(location.Country, location.State, location.City);
+                                break;
+                            case ApiEndpoint.NearestCity:
+                                result = await _apiService.GetNearestCityAir(location.Latitude.Value, location.Longitude.Value);
+                                break;
+                        }
 
                         if (result is null)
                         {

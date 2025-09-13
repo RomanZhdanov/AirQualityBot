@@ -37,6 +37,21 @@ public class AirVisualApiService : IAirApiService
         };
     }
 
+    public async Task<AirQualityResult?> GetNearestCityAir(double latitude, double longitude)
+    {
+        var cityData = await ExecuteWithRetryAsync(async () =>
+            await _airVisualClient.GetNearestCityData(latitude, longitude));
+        
+        if (cityData is null) return null;
+
+        return new AirQualityResult
+        {
+            LocationDto = new LocationDto(cityData.City, cityData.State, cityData.Country),
+            Aqi = cityData.Current.Pollution.Aqius,
+            LastUpdate = cityData.Current.Pollution.Ts
+        };
+    }
+
     public async Task<IList<CountryItem>> GetCountries()
     {
         if (_countriesList.Count == 0)

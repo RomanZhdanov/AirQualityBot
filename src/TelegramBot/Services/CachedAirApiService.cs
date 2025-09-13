@@ -36,6 +36,20 @@ public class CachedAirApiService : IAirApiService
         return result;
     }
 
+    public async Task<AirQualityResult?> GetNearestCityAir(double latitude, double longitude)
+    {
+        var key = $"{latitude}_{longitude}";
+        var result = _cache.Get<AirQualityResult>(key);
+
+        if (result is null)
+        {
+            result = await _airApiService.GetNearestCityAir(latitude, longitude);
+            _cache.Set(key, result, TimeSpan.FromHours(1));
+        }
+        
+        return result;
+    }
+
     public async Task<IList<CountryItem>> GetCountries()
     {
         return await _airApiService.GetCountries();
