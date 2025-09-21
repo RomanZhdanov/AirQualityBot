@@ -1,4 +1,4 @@
-using AirBro.TelegramBot.Handlers.Commands.AddUserLocation;
+using AirBro.TelegramBot.Handlers.Commands.FindLocation;
 using AirBro.TelegramBot.Handlers.Commands.FindNearestCity;
 using AirBro.TelegramBot.Handlers.Commands.ShowAir;
 using AirBro.TelegramBot.Handlers.Commands.ShowUserLocations;
@@ -22,9 +22,9 @@ public class UpdateHandlers : IUpdateHandlers
         _commands = new Dictionary<string, Type>
         {
             { "/start", typeof(WelcomeCommandHandler) },
-            { "/add_location", typeof(AddUserLocationCommandHandler) },
-            { "/my_locations", typeof(ShowUserLocationsCommandHandler) },
-            { "/show_air", typeof(ShowAirCommandHandler) }
+            { "/find_location", typeof(FindLocationCommandHandler) },
+            { "/monitor_list", typeof(ShowUserLocationsCommandHandler) },
+            { "/air_monitor", typeof(ShowAirCommandHandler) }
         };
 
         _queries = new Dictionary<string, Type>
@@ -37,6 +37,7 @@ public class UpdateHandlers : IUpdateHandlers
             { "CitiesPage", typeof(CitiesPageQueryHandler) },
             { "SearchCountry", typeof(SearchCountryQueryHandler) },
             { "GetLocationActions", typeof(GetLocationActionsQueryHandler) },
+            { "AddLocation", typeof(AddLocationQueryHandler) },
             { "RemoveLocation", typeof(RemoveLocationQueryHandler) },
             { "GetLocationAir", typeof(GetLocationAirQueryHandler) },
             { "SendGpsLocation", typeof(SendGpsLocationQueryHandler) }

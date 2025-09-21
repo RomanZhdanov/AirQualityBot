@@ -5,6 +5,7 @@ using AirBro.TelegramBot.Models;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace AirBro.TelegramBot.Services;
 
@@ -39,12 +40,15 @@ public class QueueMonitorService : BackgroundService
                     _currentChatId = request.ChatId;
                     _currentMessageId = request.MessageId;
                     _needNotification = false;
+                    var apiRequestsCount = 0;
+                    InlineKeyboardMarkup? keyboard = null;
                     var msgText = new StringBuilder();
-                    msgText.AppendLine($"Air quality in your locations (AQI US):");
+                    msgText.AppendLine($"Air quality report for location(s) (AQI US):");
                     msgText.AppendLine();
-                
+               
                     foreach (var apiRequest in request.ApiRequests)
                     {
+                        apiRequestsCount++;
                         var location = apiRequest.LocationDto;
                         AirQualityResult? result = null;
 
@@ -70,6 +74,16 @@ public class QueueMonitorService : BackgroundService
                         }
                     }
 
+                    if (apiRequestsCount == 1)
+                    {
+                        var location = request.ApiRequests.First().LocationDto;
+                        var buttons = new List<InlineKeyboardButton>
+                        {
+                            InlineKeyboardButton.WithCallbackData("Add this location to my monitoring list", $"AddLocation|{location.Country}|{location.State}|{location.City}")
+                        };
+                        keyboard = new InlineKeyboardMarkup(buttons); 
+                    }
+
                     if (_needNotification)
                     {
                         await _botClient.DeleteMessage(
@@ -80,6 +94,7 @@ public class QueueMonitorService : BackgroundService
                         await _botClient.SendMessage(
                             chatId: _currentChatId,
                             text: msgText.ToString(),
+                            replyMarkup:keyboard,
                             cancellationToken: stoppingToken
                         );
                     }
@@ -89,6 +104,7 @@ public class QueueMonitorService : BackgroundService
                             chatId: _currentChatId,
                             messageId: _currentMessageId,
                             text: msgText.ToString(),
+                            replyMarkup: keyboard,
                             cancellationToken: stoppingToken);
                     }
                 }

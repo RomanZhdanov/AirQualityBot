@@ -1,3 +1,4 @@
+using AirBro.TelegramBot.Models;
 using AirBro.TelegramBot.Services;
 using Microsoft.Extensions.Configuration;
 using Telegram.Bot;
@@ -7,15 +8,13 @@ namespace AirBro.TelegramBot.Handlers.Queries;
 
 public class SetCityQueryHandler : IBotQueryHandler
 {
-    private readonly int _locationsLimit;
     private readonly TempUserDataService  _tempDataService;
-    private readonly UserDataService _usersDataService;
+    private readonly ApiRequestsManagerService _apiRequestsManagerService;
 
-    public SetCityQueryHandler(IConfiguration config, TempUserDataService tempDataService, UserDataService usersDataService)
+    public SetCityQueryHandler(TempUserDataService tempDataService, ApiRequestsManagerService apiRequestsManagerService)
     {
-        _locationsLimit = config.GetValue<int>("LocationsLimit");
         _tempDataService = tempDataService;
-        _usersDataService = usersDataService;
+        _apiRequestsManagerService = apiRequestsManagerService;
     }
 
     public async Task HandleAsync(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
@@ -25,27 +24,17 @@ public class SetCityQueryHandler : IBotQueryHandler
         var args = callbackQuery.Data!.Split('|');
         var city = args[1];
 
-        var locationsCount = await _usersDataService.GetUserLocationsCountAsync(chatId);
-
-        if (locationsCount >= _locationsLimit)
-        {
-            await botClient.EditMessageText(
-                chatId: chatId,
-                messageId: messageId,
-                text: "You already reached max locations.",
-                cancellationToken: cancellationToken);
-            
-            return;
-        }
         var userLocation = _tempDataService.GetUserLocation(chatId);
         userLocation.City = city;
-
-        await _usersDataService.AddUserLocationAsync(chatId, userLocation);
 
         await botClient.EditMessageText(
             chatId: chatId,
             messageId: messageId,
-            text: $"You are all set! Use /show_air command to see air quality in your city!",
+            text: $"You've selected {userLocation}, fetching data for this location...",
             cancellationToken: cancellationToken);
+
+        var list = new List<LocationDto> { userLocation };
+
+        await _apiRequestsManagerService.DispatchGetAirRequestAsync(ApiEndpoint.City, chatId, messageId, list);
     }
 }

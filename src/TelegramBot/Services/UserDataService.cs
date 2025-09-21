@@ -52,7 +52,7 @@ public class UserDataService
 
         if (country is null)
         {
-            return;
+            throw new LocationNotFoundException();
         }
 
         var loc = await _context.Locations
@@ -63,13 +63,18 @@ public class UserDataService
 
         if (loc is null)
         {
-            loc = new Data.Models.Location
+            loc = new Location
             {
                 CountryId = country.Id,
                 State = locationDto.State,
                 City = locationDto.City
             };
             _context.Locations.Add(loc);
+        }
+
+        if (user.Locations.Contains(loc))
+        {
+            throw new LocationAlreadyAddedException();
         }
         
         user.Locations.Add(loc);
