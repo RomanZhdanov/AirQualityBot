@@ -40,16 +40,26 @@ public class QueueMonitorService : BackgroundService
                     _currentChatId = request.ChatId;
                     _currentMessageId = request.MessageId;
                     _needNotification = false;
-                    var apiRequestsCount = 0;
                     LocationDto curLocation = null;
                     InlineKeyboardMarkup? keyboard = null;
                     var msgText = new StringBuilder();
-                    msgText.AppendLine($"Air quality report for location(s) (AQI US):");
+                    var startText = string.Empty;
+
+                    if (request.Type == QueuedRequestType.FindLocation)
+                    {
+                        startText = "Air quality report for location you've searching:";
+                    }
+
+                    if (request.Type == QueuedRequestType.AirMonitor)
+                    {
+                        startText = "Air quality report for your monitoring location(s) (AQI US):";
+                    }
+
+                    msgText.AppendLine(startText);
                     msgText.AppendLine();
                
                     foreach (var apiRequest in request.ApiRequests)
                     {
-                        apiRequestsCount++;
                         var location = apiRequest.LocationDto;
                         AirQualityResult? result = null;
 
@@ -66,6 +76,7 @@ public class QueueMonitorService : BackgroundService
                         if (result is null)
                         {
                             msgText.AppendLine($"Can't fetch data for location  {location.City}, {location.State}, {location.Country}");
+                            msgText.AppendLine();
                         }
                         else
                         {
@@ -76,7 +87,7 @@ public class QueueMonitorService : BackgroundService
                         }
                     }
 
-                    if (apiRequestsCount == 1 && curLocation is not null)
+                    if (request.Type == QueuedRequestType.FindLocation && curLocation is not null)
                     {
                         var buttons = new List<InlineKeyboardButton>
                         {

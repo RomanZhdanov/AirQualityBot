@@ -1,6 +1,4 @@
-using AirBro.TelegramBot.Models;
 using AirBro.TelegramBot.Services;
-using Microsoft.Extensions.Configuration;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
@@ -33,8 +31,6 @@ public class SetCityQueryHandler : IBotQueryHandler
             text: $"You've selected {userLocation}, fetching data for this location...",
             cancellationToken: cancellationToken);
 
-        var list = new List<LocationDto> { userLocation };
-
-        await _apiRequestsManagerService.DispatchGetAirRequestAsync(ApiEndpoint.City, chatId, messageId, list);
+        await _apiRequestsManagerService.DispatchGetLocationRequestAsync(chatId, messageId, userLocation);
     }
 }

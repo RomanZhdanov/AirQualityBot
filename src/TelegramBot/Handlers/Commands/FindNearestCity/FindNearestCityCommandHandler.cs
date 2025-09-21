@@ -27,10 +27,7 @@ public class FindNearestCityCommandHandler : IBotCommandHandler
             text: "Searching for the nearest location, please wait...",
             cancellationToken: cancellationToken);
 
-        List<LocationDto> locations = [ new LocationDto(lon, lat) ];
-
-        await _apiRequestsManagerService.DispatchGetAirRequestAsync(ApiEndpoint.NearestCity, chatId, msg.Id,
-            locations);
+        await _apiRequestsManagerService.DispatchFindNearestCityRequestAsync(chatId, msg.Id, lon, lat);
 
         _tempUserDataService.State = UserStates.None;
     }
