@@ -40,7 +40,10 @@ public class UserDataService
 
     public async Task AddUserLocationAsync(long chatid, LocationDto locationDto)
     {
-        var user = await _context.Users.FindAsync(chatid);
+        var user = await _context.Users
+            .AsTracking()
+            .Include(u => u.Locations)
+            .SingleOrDefaultAsync(u => u.Id == chatid);
 
         if (user is null)
         {
@@ -56,6 +59,7 @@ public class UserDataService
         }
 
         var loc = await _context.Locations
+            .AsTracking()
             .SingleOrDefaultAsync(l =>
                 l.CountryId == country.Id && 
                 l.State == locationDto.State && 
@@ -72,7 +76,7 @@ public class UserDataService
             _context.Locations.Add(loc);
         }
 
-        if (user.Locations.Contains(loc))
+        if (user.Locations.Count(l => l.Id == loc.Id) > 0)
         {
             throw new LocationAlreadyAddedException();
         }
