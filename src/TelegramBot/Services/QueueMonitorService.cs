@@ -41,6 +41,7 @@ public class QueueMonitorService : BackgroundService
                     _currentMessageId = request.MessageId;
                     _needNotification = false;
                     var apiRequestsCount = 0;
+                    LocationDto curLocation = null;
                     InlineKeyboardMarkup? keyboard = null;
                     var msgText = new StringBuilder();
                     msgText.AppendLine($"Air quality report for location(s) (AQI US):");
@@ -68,18 +69,18 @@ public class QueueMonitorService : BackgroundService
                         }
                         else
                         {
+                            curLocation = result.LocationDto;
                             msgText.AppendLine($"{result.LocationDto.ToString()}: {result.Aqi} ({result.Quality})");
                             msgText.AppendLine($"Last update: {result.LastUpdate.ToShortTimeString()}");
                             msgText.AppendLine();
                         }
                     }
 
-                    if (apiRequestsCount == 1)
+                    if (apiRequestsCount == 1 && curLocation is not null)
                     {
-                        var location = request.ApiRequests.First().LocationDto;
                         var buttons = new List<InlineKeyboardButton>
                         {
-                            InlineKeyboardButton.WithCallbackData("Add this location to my monitoring list", $"AddLocation|{location.Country}|{location.State}|{location.City}")
+                            InlineKeyboardButton.WithCallbackData("Add this location to my monitoring list", $"AddLocation|{curLocation.Country}|{curLocation.State}|{curLocation.City}")
                         };
                         keyboard = new InlineKeyboardMarkup(buttons); 
                     }
