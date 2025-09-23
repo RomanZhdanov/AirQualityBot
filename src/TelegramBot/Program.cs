@@ -13,6 +13,7 @@ using var host = Host.CreateDefaultBuilder(args)
     {
         app.AddJsonFile("appsettings.json");
         app.AddUserSecrets(Assembly.GetExecutingAssembly());
+        app.AddEnvironmentVariables();
     })
     .ConfigureServices((ctx, services) =>
     {
