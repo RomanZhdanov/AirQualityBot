@@ -11,11 +11,22 @@ public class FindLocationCommandHandler : IBotCommandHandler
         var chatId = message.Chat.Id;
         
         var msg = "You have 3 options of how to find locations. choose one that's suites you:";
-        var buttons = new List<InlineKeyboardButton>();
-            
-        buttons.Add(InlineKeyboardButton.WithCallbackData("Send GPS location", "SendGpsLocation"));
-        buttons.Add(InlineKeyboardButton.WithCallbackData("Search", "SearchCountry"));
-        buttons.Add(InlineKeyboardButton.WithCallbackData("Select from list", "CountriesPage|1"));
+        
+        var buttons = new List<List<InlineKeyboardButton>>
+        {
+            new()
+            {
+                InlineKeyboardButton.WithCallbackData("Send GPS location", "SendGpsLocation")
+            },
+            new()
+            {
+                InlineKeyboardButton.WithCallbackData("Search", "SearchCountry")
+            },
+            new()
+            {
+                InlineKeyboardButton.WithCallbackData("Select from list", "CountriesPage|1")
+            }
+        };
             
         var keyboard = new InlineKeyboardMarkup(buttons);
 
