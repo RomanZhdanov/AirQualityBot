@@ -3,6 +3,7 @@ using AirBro.TelegramBot.Models.Mappers;
 using AirBro.TelegramBot.Services;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Microsoft.Extensions.Configuration;
 
 namespace AirBro.TelegramBot.Handlers.Commands.ShowAir;
 
@@ -10,9 +11,11 @@ public class ShowAirCommandHandler : IBotCommandHandler
 {
     private readonly ApiRequestsManagerService _apiService;
     private readonly UserDataService _usersData;
+    private readonly int _locationsLimit;
 
-    public ShowAirCommandHandler(ApiRequestsManagerService apiService, UserDataService usersData)
+    public ShowAirCommandHandler(IConfiguration config, ApiRequestsManagerService apiService, UserDataService usersData)
     {
+        _locationsLimit = config.GetValue<int>("LocationsLimit");
         _apiService = apiService;
         _usersData = usersData;
     }
@@ -26,7 +29,7 @@ public class ShowAirCommandHandler : IBotCommandHandler
         {
             await botClient.SendMessage(
                 chatId: chatId,
-                text: "You haven't added any location yet! Use the /find_location command to find location and then add it to your monitor list.",
+                text: $"You haven't added any location yet! Use the /find_location command to find location and then add it to your monitor list, you can add up to {_locationsLimit} locations.",
                 cancellationToken: cancellationToken);
 
             return;
