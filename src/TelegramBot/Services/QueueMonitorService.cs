@@ -87,6 +87,8 @@ public class QueueMonitorService : BackgroundService
                         }
                     }
 
+                    msgText.AppendLine("You can get more information about Air Quality Index with /aqi_guide command.");
+
                     if (request.Type == QueuedRequestType.FindLocation && curLocation is not null)
                     {
                         var buttons = new List<InlineKeyboardButton>

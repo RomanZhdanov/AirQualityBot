@@ -1,3 +1,4 @@
+using AirBro.TelegramBot.Handlers.Commands.AqiGuide;
 using AirBro.TelegramBot.Handlers.Commands.FindLocation;
 using AirBro.TelegramBot.Handlers.Commands.FindNearestCity;
 using AirBro.TelegramBot.Handlers.Commands.ShowAir;
@@ -25,7 +26,8 @@ public class UpdateHandlers : IUpdateHandlers
             { "/help", typeof(WelcomeCommandHandler) },
             { "/find_location", typeof(FindLocationCommandHandler) },
             { "/monitor_list", typeof(ShowUserLocationsCommandHandler) },
-            { "/air_monitor", typeof(ShowAirCommandHandler) }
+            { "/air_monitor", typeof(ShowAirCommandHandler) },
+            { "/aqi_guide", typeof(AqiGuideCommandHandler) }
         };
 
         _queries = new Dictionary<string, Type>
