@@ -1,0 +1,9 @@
+services:
+  bot:
+    build: .
+    volumes:
+      - /home/roman/Data/:/data
+    environment:
+      - ConnectionStrings__DefaultConnection=Data Source=[path]
+      - IQAirKey=[api-key]
+      - TelegramBotKey=[bot-key]
