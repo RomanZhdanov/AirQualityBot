@@ -10,7 +10,7 @@ public class ShowAirCommandHandler : IBotCommandHandler
 {
     private readonly ApiRequestsManagerService _apiService;
     private readonly UserDataService _usersData;
-    
+
     public ShowAirCommandHandler(ApiRequestsManagerService apiService, UserDataService usersData)
     {
         _apiService = apiService;
@@ -26,12 +26,12 @@ public class ShowAirCommandHandler : IBotCommandHandler
         {
             await botClient.SendMessage(
                 chatId: chatId,
-                text: "You haven't set any location yet! Use the /set_location command.",
+                text: "You haven't added any location yet! Use the /find_location command to find location and then add it to your monitor list.",
                 cancellationToken: cancellationToken);
 
             return;
         }
-        
+
         var msg = await botClient.SendMessage(
             chatId: chatId,
             text: "Fetching data please wait...",
