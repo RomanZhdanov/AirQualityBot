@@ -22,6 +22,7 @@ public class UpdateHandlers : IUpdateHandlers
         _commands = new Dictionary<string, Type>
         {
             { "/start", typeof(WelcomeCommandHandler) },
+            { "/help", typeof(WelcomeCommandHandler) },
             { "/find_location", typeof(FindLocationCommandHandler) },
             { "/monitor_list", typeof(ShowUserLocationsCommandHandler) },
             { "/air_monitor", typeof(ShowAirCommandHandler) }
