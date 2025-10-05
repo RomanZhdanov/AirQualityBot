@@ -30,6 +30,28 @@ public class LocationDto
         Latitude = null;
     }
 
+    public LocationDto(string city, string state, string country, double[] coordinates)
+    {
+        City = city;
+        State = state;
+        Country = country;
+
+        if (coordinates.Length == 2)
+        {
+            Longitude = coordinates[0];
+            Latitude = coordinates[1];
+        }
+    }
+
+    public LocationDto(string city, string state, string country, double? longitude, double? latitude)
+    {
+        City = city;
+        State = state;
+        Country = country;
+        Longitude = longitude;
+        Latitude = latitude;
+    }
+
     public LocationDto(double longitude, double latitude)
     {
         Longitude = longitude;

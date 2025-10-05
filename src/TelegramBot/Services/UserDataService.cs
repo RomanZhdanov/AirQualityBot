@@ -71,7 +71,9 @@ public class UserDataService
             {
                 CountryId = country.Id,
                 State = locationDto.State,
-                City = locationDto.City
+                City = locationDto.City,
+                Longitude = locationDto.Longitude,
+                Latitude = locationDto.Latitude,
             };
             _context.Locations.Add(loc);
         }

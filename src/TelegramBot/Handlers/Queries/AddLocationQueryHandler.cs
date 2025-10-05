@@ -25,6 +25,8 @@ public class AddLocationQueryHandler : IBotQueryHandler
         var country = args[1];
         var state = args[2];
         var city = args[3];
+        var longitude = Convert.ToDouble(args[4]);
+        var latitude = Convert.ToDouble(args[5]);
             
         var locationsCount = await _userDataService.GetUserLocationsCountAsync(chatId);
 
@@ -38,7 +40,7 @@ public class AddLocationQueryHandler : IBotQueryHandler
             return;
         }
 
-        var location = new LocationDto(city, state, country);
+        var location = new LocationDto(city, state, country, longitude, latitude);
         
         try
         {

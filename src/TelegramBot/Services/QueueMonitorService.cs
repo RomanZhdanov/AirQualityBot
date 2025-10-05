@@ -66,7 +66,15 @@ public class QueueMonitorService : BackgroundService
                         switch (apiRequest.Endpoint)
                         {
                             case ApiEndpoint.City:
-                                result = await _apiService.GetAir(location.Country, location.State, location.City);
+                                if (location.Latitude is null || location.Longitude is null)
+                                {
+                                    result = await _apiService.GetAir(location.Country, location.State, location.City);
+                                }
+                                else
+                                {
+                                    result = await _apiService.GetNearestCityAir(location.Latitude.Value, location.Longitude.Value);
+                                }
+
                                 break;
                             case ApiEndpoint.NearestCity:
                                 result = await _apiService.GetNearestCityAir(location.Latitude.Value, location.Longitude.Value);
@@ -93,7 +101,7 @@ public class QueueMonitorService : BackgroundService
                     {
                         var buttons = new List<InlineKeyboardButton>
                         {
-                            InlineKeyboardButton.WithCallbackData("Add this location to my monitoring list", $"AddLocation|{curLocation.Country}|{curLocation.State}|{curLocation.City}")
+                            InlineKeyboardButton.WithCallbackData("Add this location to my monitoring list", $"AddLocation|{curLocation.Country}|{curLocation.State}|{curLocation.City}|{curLocation.Longitude}|{curLocation.Latitude}")
                         };
                         keyboard = new InlineKeyboardMarkup(buttons); 
                     }

@@ -31,7 +31,7 @@ public class AirVisualApiService : IAirApiService
         
         return new AirQualityResult()
         {
-            LocationDto = new LocationDto(cityData.City, cityData.State, cityData.Country),
+            LocationDto = new LocationDto(cityData.City, cityData.State, cityData.Country, cityData.Location.Coordinates),
             Aqi = cityData.Current.Pollution.Aqius,
             LastUpdate = cityData.Current.Pollution.Ts
         };
@@ -46,7 +46,7 @@ public class AirVisualApiService : IAirApiService
 
         return new AirQualityResult
         {
-            LocationDto = new LocationDto(cityData.City, cityData.State, cityData.Country),
+            LocationDto = new LocationDto(cityData.City, cityData.State, cityData.Country, cityData.Location.Coordinates),
             Aqi = cityData.Current.Pollution.Aqius,
             LastUpdate = cityData.Current.Pollution.Ts
         };
