@@ -52,7 +52,7 @@ public class GetLocationActionsQueryHandler : IBotQueryHandler
             }
         };
             
-        var keyboard = new InlineKeyboardMarkup(buttons);
+        var keyboard = new InlineKeyboardMarkup((IEnumerable<IEnumerable<InlineKeyboardButton>>)buttons);
         
         await botClient.EditMessageText(
             chatId: chatId,
