@@ -1,4 +1,5 @@
 using System.Threading.Channels;
+using AirBro.TelegramBot.Api;
 using AirBro.TelegramBot.Data;
 using AirBro.TelegramBot.Extentions;
 using AirBro.TelegramBot.Interfaces;
@@ -36,9 +37,16 @@ public static class DependencyInjection
             return new TelegramBotClient(key);
         });
         
-        var channel = Channel.CreateUnbounded<QueuedRequest>();
+        var channel = Channel.CreateUnbounded<IApiRequest>();
         services.AddSingleton(channel.Reader);
         services.AddSingleton(channel.Writer);
+        
+        var assembly = typeof(Program).Assembly; 
+        services.Scan(scan => scan
+            .FromAssemblies(assembly)
+            .AddClasses(classes => classes.AssignableTo(typeof(IApiRequestHandler<>)))
+            .AsImplementedInterfaces()
+            .WithScopedLifetime());
 
         services.AddHostedService<BotService>();
         services.AddHostedService<QueueMonitorService>();
@@ -50,6 +58,7 @@ public static class DependencyInjection
         services.AddTransient<IAirVisualApi, IQAirApiClient.AirVisualApiClient>();
         services.AddTransient<LocationsInitializer>();
         services.AddTransient<CountriesService>();
+        services.AddTransient<LocationsService>();
         services.AddTransient<ApiRequestsManagerService>();
         services.AddHttpClient();
         services.AddBotHandlers();

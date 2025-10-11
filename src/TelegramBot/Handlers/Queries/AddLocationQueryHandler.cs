@@ -22,11 +22,7 @@ public class AddLocationQueryHandler : IBotQueryHandler
     { 
         var chatId = callbackQuery.Message!.Chat.Id;
         var args = callbackQuery.Data!.Split('|');
-        var country = args[1];
-        var state = args[2];
-        var city = args[3];
-        var longitude = Convert.ToDouble(args[4]);
-        var latitude = Convert.ToDouble(args[5]);
+        var locationId = Convert.ToInt32(args[1]);
             
         var locationsCount = await _userDataService.GetUserLocationsCountAsync(chatId);
 
@@ -40,11 +36,9 @@ public class AddLocationQueryHandler : IBotQueryHandler
             return;
         }
 
-        var location = new LocationDto(city, state, country, longitude, latitude);
-        
         try
         {
-            await _userDataService.AddUserLocationAsync(chatId, location);
+            var location = await _userDataService.AddUserLocationAsync(chatId, locationId);
             await botClient.SendMessage(
                 chatId: chatId,
                 text: $"Location {location} was successfully added. Use /air_monitor to watch air in your locations or /monitor_list to manage your location.",
@@ -54,14 +48,14 @@ public class AddLocationQueryHandler : IBotQueryHandler
         {
             await botClient.SendMessage(
                 chatId: chatId,
-                text: $"Location {location} was not found.",
+                text: $"Location was not found.",
                 cancellationToken: cancellationToken);
         }
         catch (LocationAlreadyAddedException)
         {
             await botClient.SendMessage(
                 chatId: chatId,
-                text: $"Location {location} already added.",
+                text: $"Location already added.",
                 cancellationToken: cancellationToken);
         }
     }

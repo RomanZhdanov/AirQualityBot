@@ -27,7 +27,7 @@ public class FindNearestCityCommandHandler : IBotCommandHandler
             text: "Searching for the nearest location, please wait...",
             cancellationToken: cancellationToken);
 
-        await _apiRequestsManagerService.DispatchFindNearestCityRequestAsync(chatId, msg.Id, lon, lat);
+        await _apiRequestsManagerService.DispatchFindNearestCityRequestAsync(chatId, msg.Id, true, lon, lat);
 
         _tempUserDataService.State = UserStates.None;
     }

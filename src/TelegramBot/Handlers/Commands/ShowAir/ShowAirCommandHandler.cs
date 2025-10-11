@@ -1,4 +1,3 @@
-using AirBro.TelegramBot.Models;
 using AirBro.TelegramBot.Models.Mappers;
 using AirBro.TelegramBot.Services;
 using Telegram.Bot;
@@ -41,6 +40,6 @@ public class ShowAirCommandHandler : IBotCommandHandler
             cancellationToken: cancellationToken);
 
         var loc = locations.Select(l => l.ToLocationDto());
-        await _apiService.DispatchGetAirRequestAsync(ApiEndpoint.City, chatId, msg.Id, loc);
+        await _apiService.DispatchGetCollectionAirRequestAsync(chatId, msg.Id, loc);
     }
 }

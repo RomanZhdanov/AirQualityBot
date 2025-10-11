@@ -38,7 +38,7 @@ public class UserDataService
         return user.Locations.OrderBy(l => l.City).ToList();
     }
 
-    public async Task AddUserLocationAsync(long chatid, LocationDto locationDto)
+    public async Task<Location> AddUserLocationAsync(long chatid, int locationId)
     {
         var user = await _context.Users
             .AsTracking()
@@ -51,40 +51,23 @@ public class UserDataService
             _context.Users.Add(user);
         }
         
-        var country = await _context.Countries.SingleOrDefaultAsync(c => c.Name == locationDto.Country);
-
-        if (country is null)
-        {
-            throw new LocationNotFoundException();
-        }
-
-        var loc = await _context.Locations
+        var location = await _context.Locations
             .AsTracking()
-            .SingleOrDefaultAsync(l =>
-                l.CountryId == country.Id && 
-                l.State == locationDto.State && 
-                l.City == locationDto.City);
-
-        if (loc is null)
-        {
-            loc = new Location
-            {
-                CountryId = country.Id,
-                State = locationDto.State,
-                City = locationDto.City,
-                Longitude = locationDto.Longitude,
-                Latitude = locationDto.Latitude,
-            };
-            _context.Locations.Add(loc);
-        }
-
-        if (user.Locations.Count(l => l.Id == loc.Id) > 0)
+            .Include(l => l.Country)
+            .SingleOrDefaultAsync(l => l.Id == locationId);
+        
+        if (location is null)
+            throw new LocationNotFoundException();
+        
+        if (user.Locations.Count(l => l.Id == location.Id) > 0)
         {
             throw new LocationAlreadyAddedException();
         }
         
-        user.Locations.Add(loc);
+        user.Locations.Add(location);
         await _context.SaveChangesAsync();
+        
+        return location;   
     }
 
     public async Task<LocationDto> RemoveUserLocationAsync(long chatId, int locationId)

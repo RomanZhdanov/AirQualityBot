@@ -47,11 +47,6 @@ public class GetLocationAirQueryHandler : IBotQueryHandler
             text: "Fetching data please wait...",
             cancellationToken: cancellationToken);
 
-        var payload = new List<LocationDto>
-        {
-            location.ToLocationDto()
-        };
-
-        await _apiRequestsManager.DispatchGetAirRequestAsync(ApiEndpoint.City, chatId, messageid, payload);
+        await _apiRequestsManager.DispatchGetLocationRequestAsync(chatId, messageid, false, location.ToLocationDto());
     }
 }

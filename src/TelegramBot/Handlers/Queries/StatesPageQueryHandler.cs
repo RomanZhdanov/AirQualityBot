@@ -1,5 +1,6 @@
 using AirBro.TelegramBot.Helpers;
 using AirBro.TelegramBot.Interfaces;
+using AirBro.TelegramBot.Services;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
@@ -7,11 +8,11 @@ namespace AirBro.TelegramBot.Handlers.Queries;
 
 public class StatesPageQueryHandler : IBotQueryHandler
 {
-    private readonly IAirApiService _airService;
-
-    public StatesPageQueryHandler(IAirApiService airService)
+    private readonly ApiRequestsManagerService _apiRequestsManagerService;
+    
+    public StatesPageQueryHandler(ApiRequestsManagerService apiRequestsManagerService)
     {
-        _airService = airService;
+        _apiRequestsManagerService = apiRequestsManagerService;
     }
 
     public async Task HandleAsync(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
@@ -21,8 +22,7 @@ public class StatesPageQueryHandler : IBotQueryHandler
         var args =  callbackQuery.Data!.Split('|');
         var country =  args[1];
         var page = Convert.ToInt32(args[2]);
-        var statesPage = await _airService.GetStatesPage(country, page, 10);
-        
-        await MessagesHelper.SendStatesPageMessage(botClient, country, statesPage, chatId, messageId, cancellationToken);
+
+        await _apiRequestsManagerService.DispatchGetStatesPageRequestAsync(chatId, messageId, country, page);
     }
 }

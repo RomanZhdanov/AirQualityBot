@@ -1,51 +1,60 @@
 using System.Threading.Channels;
+using AirBro.TelegramBot.Api;
+using AirBro.TelegramBot.Api.Requests;
 using AirBro.TelegramBot.Models;
 
 namespace AirBro.TelegramBot.Services;
 
 public class ApiRequestsManagerService
 {
-    private readonly ChannelWriter<QueuedRequest> _queue;
+    private readonly ChannelWriter<IApiRequest> _queue;
 
-    public ApiRequestsManagerService(ChannelWriter<QueuedRequest> queue)
+    public ApiRequestsManagerService(ChannelWriter<IApiRequest> queue)
     {
         _queue = queue;
     }
 
-    public async Task DispatchGetLocationRequestAsync(long chatId, int messageId, LocationDto location)
+    public async Task DispatchGetLocationRequestAsync(long chatId, int messageId, bool search, LocationDto location)
     {
-        var apiRequest = new List<ApiRequest>
+        IApiRequest request;
+        
+        if (location.Latitude is null || location.Longitude is null)
         {
-            new ApiRequest(ApiEndpoint.City, location)
-        };
-        
-        var request = new QueuedRequest(chatId, messageId, QueuedRequestType.FindLocation, apiRequest);
-        await _queue.WriteAsync(request);
-    }
-
-    public async Task DispatchFindNearestCityRequestAsync(long chatId, int messageId, double longitude,
-        double latitude)
-    {
-        var location = new LocationDto(longitude, latitude);
-        var requests = new List<ApiRequest>
+            request =
+                new GetCityAirByNameRequest(chatId, messageId, search, location.Country, location.State, location.City);
+        }
+        else
         {
-            new ApiRequest(ApiEndpoint.NearestCity, location)
-        };
-        
-        var request = new QueuedRequest(chatId, messageId, QueuedRequestType.FindLocation, requests);
-        await _queue.WriteAsync(request);
-    }
-
-    public async Task DispatchGetAirRequestAsync(ApiEndpoint endpoint, long chatId, int messageId, IEnumerable<LocationDto> locations)
-    {
-        var apiRequests = new List<ApiRequest>(); 
-        
-        foreach (var location in locations) 
-        { 
-            apiRequests.Add(new ApiRequest(endpoint, location));
+            request =
+                new GetCityAirByCoordinatesRequest(chatId, messageId, search, location.Latitude.Value, location.Longitude.Value);
         }
 
-        var request = new QueuedRequest(chatId, messageId, QueuedRequestType.AirMonitor, apiRequests);
         await _queue.WriteAsync(request);
+    }
+
+    public async Task DispatchFindNearestCityRequestAsync(long chatId, int messageId, bool search, double longitude,
+        double latitude)
+    {
+        var request = new GetCityAirByCoordinatesRequest(chatId, messageId, search, latitude, longitude);
+        await _queue.WriteAsync(request);
+    }
+
+    public async Task DispatchGetCollectionAirRequestAsync(long chatId, int messageId, IEnumerable<LocationDto> locations)
+    {
+        var request = new GetCollectionAirRequest(chatId, messageId, locations);
+        await _queue.WriteAsync(request);
+    }
+
+    public async Task DispatchGetStatesPageRequestAsync(long chatId, int messageId, string country, int page)
+    {
+        var request = new GetStatesPageRequest(chatId, messageId, country, page);
+        await _queue.WriteAsync(request);
+    }
+
+    public async Task DispatchGetCitiesPageRequestAsync(long chatId, int messageId, string country, string state,
+        int page)
+    {
+        var request = new GetCitiesPageRequest(chatId, messageId, country, state, page);
+        await _queue.WriteAsync(request);   
     }
 }

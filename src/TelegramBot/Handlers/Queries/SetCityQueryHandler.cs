@@ -31,6 +31,6 @@ public class SetCityQueryHandler : IBotQueryHandler
             text: $"You've selected {userLocation}, fetching data for this location...",
             cancellationToken: cancellationToken);
 
-        await _apiRequestsManagerService.DispatchGetLocationRequestAsync(chatId, messageId, userLocation);
+        await _apiRequestsManagerService.DispatchGetLocationRequestAsync(chatId, messageId, true, userLocation);
     }
 }
